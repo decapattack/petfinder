@@ -41,4 +41,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Alerts
     Route::post('/alerts', [AlertController::class, 'store'])->name('alerts.store');
     Route::post('/alerts/{alert}/resolve', [AlertController::class, 'resolve'])->name('alerts.resolve');
+    Route::post('/alerts/test', [AlertController::class, 'testNotification'])->name('alerts.test');
 });

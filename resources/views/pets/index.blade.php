@@ -3,7 +3,13 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>🐾 Meus Pets</h2>
-        <a href="{{ route('pets.create') }}" class="btn btn-premium">+ Cadastrar Pet</a>
+        <div class="d-flex gap-2">
+            <form action="{{ route('alerts.test') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-outline-secondary btn-sm rounded-pill">Testar Notificação 🔔</button>
+            </form>
+            <a href="{{ route('pets.create') }}" class="btn btn-premium">+ Cadastrar Pet</a>
+        </div>
     </div>
 
     <div class="row">
