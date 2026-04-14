@@ -72,6 +72,20 @@ class AlertController extends Controller
         return redirect()->route('pets.index')->with('success', 'Ficamos felizes que seu pet foi encontrado!' . $heroMessage);
     }
 
+    public function testNotification()
+    {
+        $user = Auth::user();
+        $pet = Pet::first(); // Grab any pet for the demo
+
+        if (!$pet) {
+            return back()->with('error', 'Cadastre pelo menos um pet para testar a notificação.');
+        }
+
+        $user->notify(new PetLostNotification($pet));
+
+        return back()->with('success', '🔔 Notificação de teste enviada! Confira o sino na barra superior.');
+    }
+
     private function getNeighborsWithinRadius($lat, $lng, $radiusKm)
     {
         // Bounding box approximation for 1km (roughly 0.009 deg)
