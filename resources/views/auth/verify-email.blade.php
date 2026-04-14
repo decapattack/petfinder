@@ -1,43 +1,26 @@
-@extends('layouts.app')
-
-@section('title', 'Verificar E-mail - PetFinder')
-
-@section('content')
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card premium-card">
-            <div class="card-body p-5 text-center">
-                <h2 class="mb-4">Verifique seu E-mail</h2>
-                <p class="text-muted">
-                    Obrigado por se cadastrar! Antes de começar, por favor verifique seu endereço de e-mail clicando no link que acabamos de enviar para você.
-                </p>
-                <p class="text-muted">
-                    Se você não recebeu o e-mail, teremos prazer em lhe enviar outro.
-                </p>
-
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                <div class="mt-4 d-flex justify-content-between">
-                    <form method="POST" action="{{ route('verification.send') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-premium">
-                            Reenviar E-mail de Verificação
-                        </button>
-                    </form>
-
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-link text-decoration-none text-muted">
-                            Sair
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
+<x-guest-layout>
+    <div class="text-center mb-4">
+        <h4 class="fw-bold">Verificar E-mail</h4>
     </div>
-</div>
-@endsection
+
+    <p class="text-muted small mb-4">
+        Obrigado por se cadastrar! Antes de continuar, verifique seu endereço de e-mail clicando no link que enviamos a você.
+        Caso não tenha recebido, podemos reenviar.
+    </p>
+
+    <x-auth-session-status :status="session('status')" />
+
+    <form method="POST" action="{{ route('verification.send') }}">
+        @csrf
+        <div class="d-grid">
+            <x-primary-button>Reenviar Link de Verificação</x-primary-button>
+        </div>
+    </form>
+
+    <form method="POST" action="{{ route('logout') }}" class="mt-3">
+        @csrf
+        <div class="text-center">
+            <button type="submit" class="btn btn-link text-muted text-decoration-none small">Sair</button>
+        </div>
+    </form>
+</x-guest-layout>
