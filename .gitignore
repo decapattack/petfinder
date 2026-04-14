@@ -1,0 +1,40 @@
+# Pastas de dependências e builds
+/node_modules
+/public/build
+/public/hot
+/vendor
+
+# Arquivos de Ambiente
+.env
+.env.backup
+.env.production
+.env.testing
+
+# Banco de Dados SQLite
+/database/*.sqlite
+/database/*.sqlite-journal
+
+# Storage
+/storage/*.key
+/storage/app/public/pets/*
+!/storage/app/public/.gitignore
+/storage/framework/cache/data/*
+/storage/framework/views/*.php
+/storage/framework/sessions/*
+/storage/logs/*.log
+/public/storage
+
+# Cache de ferramentas de teste
+/.phpunit.cache
+/.phpunit.result.cache
+
+# Configurações de IDEs
+/.idea
+/.vscode
+/.fleet
+.DS_Store
+
+# Logs de erro de pacotes
+npm-debug.log
+yarn-error.log
+auth.json
