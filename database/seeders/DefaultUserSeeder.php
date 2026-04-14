@@ -11,10 +11,10 @@ class DefaultUserSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate(
-            ['email' => 'aleste2@ymail.com'],
+            ['email' => 'teste@teste.com'],
             [
                 'name' => 'Usuário Padrão',
-                'password' => Hash::make('Gun!star2'),
+                'password' => Hash::make('teste'),
                 'telefone' => '11999999999',
                 'latitude' => -23.5505,
                 'longitude' => -46.6333,
