@@ -30,7 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/pets/{pet}', [PetController::class, 'destroy'])->name('pets.destroy');
 
     // Alerts
-    Route::post('/alerts',                         [AlertController::class, 'store'])->name('alerts.store');
-    Route::post('/alerts/test',                    [AlertController::class, 'testNotification'])->name('alerts.test');
-    Route::post('/alerts/{alert}/resolve',         [AlertController::class, 'resolve'])->name('alerts.resolve');
+    Route::post('/alerts',                        [AlertController::class, 'store'])->name('alerts.store');
+    Route::post('/alerts/test',                   [AlertController::class, 'testNotification'])->name('alerts.test');
+    Route::post('/alerts/{alert}/resolve',        [AlertController::class, 'resolve'])->middleware('throttle:5,1')->name('alerts.resolve');
 });

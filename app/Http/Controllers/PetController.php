@@ -24,11 +24,12 @@ class PetController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nome' => 'required|string|max:255',
-            'especie' => 'required|string',
-            'raca' => 'required|string',
-            'cor' => 'required|string',
-            'foto' => 'required|image|max:2048',
+            'nome'               => 'required|string|max:255',
+            'especie'            => 'required|string|max:100',
+            'raca'               => 'required|string|max:100',
+            'cor'                => 'required|string|max:100',
+            'condicoes_especiais'=> 'nullable|string|max:500',
+            'foto'               => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $path = $request->file('foto')->store('pets', 'public');
