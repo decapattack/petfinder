@@ -45,4 +45,20 @@ class Pet extends Model
     {
         return $this->alerts()->where('status', 'ativo')->first();
     }
+
+    /**
+     * Relacionamento: Fichas clínicas do pet
+     */
+    public function healthRecords()
+    {
+        return $this->hasMany(HealthRecord::class)->orderBy('record_date', 'desc');
+    }
+
+    /**
+     * Relacionamento: Lembretes de vacinas/remédios
+     */
+    public function schedules()
+    {
+        return $this->hasMany(PetSchedule::class)->orderBy('due_date', 'asc');
+    }
 }

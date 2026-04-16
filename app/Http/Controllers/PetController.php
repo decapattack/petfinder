@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Pet;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PetController extends Controller
 {
+    use AuthorizesRequests;
     public function index()
     {
         $pets = Auth::user()->pets;
@@ -66,5 +68,42 @@ class PetController extends Controller
 
         $pet->delete();
         return back()->with('success', 'Pet removido com sucesso.');
+    }
+
+    /**
+     * HEALTH: Tela principal da Aba de Saúde
+     * Exibe formulário de veterinário e tabs de fichas/lembretes
+     */
+    public function health(Pet $pet)
+    {
+        $this->authorize('update', $pet);
+
+        // Eager load das relações
+        $pet->load([
+            'healthRecords' => fn($q) => $q->latest('record_date'),
+            'schedules' => fn($q) => $q->upcoming(),
+        ]);
+
+        return view('pets.health', compact('pet'));
+    }
+
+    /**
+     * UPDATE VET: Atualiza dados do veterinário de confiança
+     * PATCH /pets/{pet}/vet
+     */
+    public function updateVet(Request $request, Pet $pet)
+    {
+        $this->authorize('update', $pet);
+
+        $validated = $request->validate([
+            'vet_name' => 'nullable|string|max:100',
+            'vet_phone' => 'nullable|string|max:20',
+        ]);
+
+        $pet->update($validated);
+
+        return redirect()
+            ->route('pets.health', $pet)
+            ->with('success', 'Dados do veterinário atualizados!');
     }
 }

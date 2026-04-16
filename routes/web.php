@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AlertController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HealthRecordController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ScheduleController;
 use Illuminate\Support\Facades\Route;
 
 // ─── Home ────────────────────────────────────────────────────────────────────
@@ -39,4 +41,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Pet Health - Saúde & Vet (Tela principal)
+    Route::get('/pets/{pet}/health', [PetController::class, 'health'])->name('pets.health');
+    Route::patch('/pets/{pet}/vet', [PetController::class, 'updateVet'])->name('pets.vet.update');
+
+    // Health Records - Fichas Clínicas
+    Route::post('/pets/{pet}/records', [HealthRecordController::class, 'store'])->name('pets.records.store');
+    Route::post('/pets/{pet}/records/{record}/privacy', [HealthRecordController::class, 'updatePrivacy'])->name('pets.records.privacy');
+    Route::get('/pets/{pet}/records/{record}/view', [HealthRecordController::class, 'showFile'])->name('pets.records.view');
+    Route::delete('/pets/{pet}/records/{record}', [HealthRecordController::class, 'destroy'])->name('pets.records.destroy');
+
+    // Schedules - Lembretes de Vacinas/Remédios
+    Route::post('/pets/{pet}/schedules', [ScheduleController::class, 'store'])->name('pets.schedules.store');
+    Route::post('/pets/{pet}/schedules/{schedule}/toggle', [ScheduleController::class, 'toggle'])->name('pets.schedules.toggle');
+    Route::delete('/pets/{pet}/schedules/{schedule}', [ScheduleController::class, 'destroy'])->name('pets.schedules.destroy');
 });

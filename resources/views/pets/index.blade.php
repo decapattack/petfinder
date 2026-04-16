@@ -71,7 +71,11 @@
                                 </div>
                             @endif
                             
-                            <a href="{{ url('/pet/' . $pet->uuid) }}" class="btn btn-outline-primary btn-sm" target="_blank">Ver Página Pública</a>
+                            <a href="{{ route('pets.health', $pet) }}" class="btn btn-outline-success btn-sm">
+                                <i class="bi bi-heart-pulse me-1"></i>Saúde
+                            </a>
+                            
+                            <a href="{{ url('/pet/' . $pet->uuid) }}" class="btn btn-outline-primary btn-sm" target="_blank">Página Pública</a>
                             
                             <form action="{{ route('pets.destroy', $pet) }}" method="POST" onsubmit="return confirm('Tem certeza?')">
                                 @csrf
