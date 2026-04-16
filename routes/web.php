@@ -3,6 +3,7 @@
 use App\Http\Controllers\AlertController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PetController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // ─── Home ────────────────────────────────────────────────────────────────────
@@ -24,7 +25,7 @@ Route::get('/pet/{uuid}', [PetController::class, 'showPublic'])->name('pets.publ
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // Pets
-    Route::get('/dashboard',   [PetController::class, 'index'])->name('pets.index');
+    Route::get('/dashboard',   [PetController::class, 'index'])->name('dashboard');
     Route::get('/pets/create', [PetController::class, 'create'])->name('pets.create');
     Route::post('/pets',       [PetController::class, 'store'])->name('pets.store');
     Route::delete('/pets/{pet}', [PetController::class, 'destroy'])->name('pets.destroy');
@@ -33,4 +34,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/alerts',                        [AlertController::class, 'store'])->name('alerts.store');
     Route::post('/alerts/test',                   [AlertController::class, 'testNotification'])->name('alerts.test');
     Route::post('/alerts/{alert}/resolve',        [AlertController::class, 'resolve'])->middleware('throttle:5,1')->name('alerts.resolve');
+
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
