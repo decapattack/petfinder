@@ -35,7 +35,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
                         <li class="nav-item ms-lg-2"><a class="btn btn-premium btn-sm" href="{{ route('register') }}">Cadastrar</a></li>
                     @else
-                        <li class="nav-item"><a class="nav-link" href="{{ route('pets.index') }}">Meus Pets</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Meus Pets</a></li>
 
                         {{-- Notification Bell --}}
                         <li class="nav-item dropdown px-1">

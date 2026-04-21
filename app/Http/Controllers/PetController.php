@@ -47,7 +47,7 @@ class PetController extends Controller
             'status' => 'seguro',
         ]);
 
-        return redirect()->route('pets.index')->with('success', 'Pet cadastrado com sucesso!');
+        return redirect()->route('dashboard')->with('success', 'Pet cadastrado com sucesso!');
     }
 
     public function showPublic($uuid)

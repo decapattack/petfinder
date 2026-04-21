@@ -20,6 +20,8 @@ class Pet extends Model
         'condicoes_especiais',
         'foto',
         'status',
+        'vet_name',
+        'vet_phone',
     ];
 
     protected static function boot()

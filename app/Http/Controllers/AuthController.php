@@ -62,11 +62,11 @@ class AuthController extends Controller
 
         Auth::login($user, true);
 
-        // If missing geolocation/phone, send to setup page
+        // If missing geolocation/phone, send to setup page (Profile, not Register which is guest-only)
         if (!$user->latitude || !$user->telefone) {
-            return redirect()->route('register')->with('info', 'Complete seus dados para ativar o Radar 1 KM.');
+            return redirect()->route('profile.edit')->with('info', 'Complete seus dados para ativar o Radar 1 KM.');
         }
 
-        return redirect()->route('pets.index');
+        return redirect()->route('dashboard');
     }
 }

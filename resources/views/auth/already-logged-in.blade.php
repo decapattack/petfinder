@@ -10,7 +10,7 @@
                     <p class="text-muted fs-5 mb-4">Você já está logado na plataforma.</p>
                     <div class="d-grid gap-2">
                         <a href="/" class="btn btn-premium btn-lg">Voltar para Home</a>
-                        <a href="{{ route('pets.index') }}" class="btn btn-outline-primary">Ir para Meus Pets</a>
+                        <a href="{{ route('dashboard') }}" class="btn btn-outline-primary">Ir para Meus Pets</a>
                     </div>
                 </div>
             </div>

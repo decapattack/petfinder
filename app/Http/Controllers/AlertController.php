@@ -58,7 +58,7 @@ class AlertController extends Controller
 
         // Fix #8: Prevent resolving an already-resolved alert
         if ($alert->status === 'resolvido') {
-            return redirect()->route('pets.index')->with('error', 'Este alerta já foi encerrado.');
+            return redirect()->route('dashboard')->with('error', 'Este alerta já foi encerrado.');
         }
 
         $alert->update(['status' => 'resolvido']);
@@ -76,7 +76,7 @@ class AlertController extends Controller
             $heroMessage = ' Se o e-mail informado pertencer a um usuário PetFinder, ele receberá os pontos!';
         }
 
-        return redirect()->route('pets.index')->with('success', 'Ficamos felizes que seu pet voltou para casa!' . $heroMessage);
+        return redirect()->route('dashboard')->with('success', 'Ficamos felizes que seu pet voltou para casa!' . $heroMessage);
     }
 
     public function testNotification()
