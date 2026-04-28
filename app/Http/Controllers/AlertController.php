@@ -31,6 +31,11 @@ class AlertController extends Controller
         }
 
         $user = Auth::user();
+        
+        if (!$user->latitude || !$user->longitude) {
+            return redirect()->route('profile.edit')
+                ->with('error', '⚠️ Você precisa cadastrar sua localização no perfil antes de emitir um alerta para que o Radar 1 KM funcione.');
+        }
 
         $alert = Alert::create([
             'pet_id'         => $pet->id,

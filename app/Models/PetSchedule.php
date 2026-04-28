@@ -30,10 +30,10 @@ class PetSchedule extends Model
 
     protected $casts = [
         'is_completed' => 'boolean',
-        'due_date' => 'date',
-        'time' => 'datetime:H:i', // Cast como time apenas
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'due_date'     => 'date',
+        'time'         => 'string', // Coluna TIME do banco — não usar datetime cast
+        'created_at'   => 'datetime',
+        'updated_at'   => 'datetime',
     ];
 
     /**

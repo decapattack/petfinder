@@ -1,64 +1,90 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
-        </h2>
-
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
-        </p>
-    </header>
+    <p class="text-muted small mb-4">
+        Atualize as informações do seu perfil e endereço de e-mail.
+    </p>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}">
         @csrf
         @method('patch')
 
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+        <div class="mb-3">
+            <x-input-label for="name" :value="__('Nome')" />
+            <x-text-input id="name" name="name" type="text" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-input-error :messages="$errors->get('name')" />
         </div>
 
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+        <div class="mb-3">
+            <x-input-label for="email" :value="__('E-mail')" />
+            <x-text-input id="email" name="email" type="email" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-input-error :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-800">
-                        {{ __('Your email address is unverified.') }}
-
-                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Click here to re-send the verification email.') }}
-                        </button>
-                    </p>
-
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600">
-                            {{ __('A new verification link has been sent to your email address.') }}
-                        </p>
-                    @endif
+                <div class="alert alert-warning py-2 small mt-2">
+                    {{ __('Seu endereço de e-mail não está verificado.') }}
+                    <button form="send-verification" type="submit" class="btn btn-sm btn-outline-warning ms-2">
+                        {{ __('Reenviar verificação') }}
+                    </button>
                 </div>
+
+                @if (session('status') === 'verification-link-sent')
+                    <div class="alert alert-success py-2 small mt-2">
+                        {{ __('Um novo link de verificação foi enviado para seu e-mail.') }}
+                    </div>
+                @endif
             @endif
         </div>
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+        <div class="mb-3">
+            <x-input-label for="telefone" :value="__('Telefone (WhatsApp)')" />
+            <x-text-input id="telefone" name="telefone" type="tel" :value="old('telefone', $user->telefone)" placeholder="(00) 00000-0000" />
+            <x-input-error :messages="$errors->get('telefone')" />
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-6">
+                <x-input-label for="latitude" :value="__('Latitude')" />
+                <x-text-input id="latitude" name="latitude" type="text" :value="old('latitude', $user->latitude)" readonly />
+            </div>
+            <div class="col-6">
+                <x-input-label for="longitude" :value="__('Longitude')" />
+                <x-text-input id="longitude" name="longitude" type="text" :value="old('longitude', $user->longitude)" readonly />
+            </div>
+            <div class="col-12 mt-2">
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="captureLocation()">
+                    📍 Atualizar Localização (Radar 1 KM)
+                </button>
+                <div id="geo-status" class="form-text"></div>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            <x-primary-button>{{ __('Salvar') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                <span class="text-success small">✔ Salvo com sucesso!</span>
             @endif
         </div>
     </form>
 </section>
+
+@push('scripts')
+<script>
+function captureLocation() {
+    const status = document.getElementById('geo-status');
+    if (!navigator.geolocation) { status.textContent = 'Geolocalização não suportada.'; return; }
+    status.textContent = 'Obtendo localização...';
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            document.getElementById('latitude').value = pos.coords.latitude;
+            document.getElementById('longitude').value = pos.coords.longitude;
+            status.innerHTML = '<span class="text-success">✔ Localização atualizada!</span>';
+        },
+        () => { status.innerHTML = '<span class="text-danger">✗ Não foi possível obter a localização.</span>'; }
+    );
+}
+</script>
+@endpush

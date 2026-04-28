@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="row justify-content-center py-5">
         <div class="col-md-6">
-            <div class="card premium-card text-center">
+            <div class="card shadow-sm text-center">
                 <div class="card-body p-5">
                     <div class="mb-4">
                         <span class="fs-1">👋</span>
@@ -9,7 +9,7 @@
                     <h3>Olá, {{ Auth::user()->name }}!</h3>
                     <p class="text-muted fs-5 mb-4">Você já está logado na plataforma.</p>
                     <div class="d-grid gap-2">
-                        <a href="/" class="btn btn-premium btn-lg">Voltar para Home</a>
+                        <a href="/" class="btn btn-primary btn-lg">Voltar para Home</a>
                         <a href="{{ route('dashboard') }}" class="btn btn-outline-primary">Ir para Meus Pets</a>
                     </div>
                 </div>
@@ -17,3 +17,4 @@
         </div>
     </div>
 </x-app-layout>
+

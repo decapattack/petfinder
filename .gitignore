@@ -38,3 +38,7 @@
 npm-debug.log
 yarn-error.log
 auth.json
+
+**/caddy
+frankenphp
+frankenphp-worker.php

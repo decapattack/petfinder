@@ -8,14 +8,14 @@
                 @csrf
                 <button type="submit" class="btn btn-outline-secondary btn-sm rounded-pill">Testar Notificação 🔔</button>
             </form>
-            <a href="{{ route('pets.create') }}" class="btn btn-premium">+ Cadastrar Pet</a>
+            <a href="{{ route('pets.create') }}" class="btn btn-primary">+ Cadastrar Pet</a>
         </div>
     </div>
 
     <div class="row">
         @forelse($pets as $pet)
             <div class="col-md-4 mb-4">
-                <div class="card premium-card h-100 {{ $pet->status == 'desaparecido' ? 'border-danger border-3 shadow' : '' }}">
+                <div class="card shadow-sm h-100 {{ $pet->status == 'desaparecido' ? 'border-danger border-3 shadow' : '' }}">
                     <img src="{{ asset('storage/' . $pet->foto) }}" class="card-img-top" alt="{{ $pet->nome }}" style="height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
                     <div class="card-body">
                         <h5 class="card-title fw-bold">{{ $pet->nome }}</h5>
@@ -89,8 +89,9 @@
         @empty
             <div class="col-12 text-center py-5">
                 <h4 class="text-muted">Nenhum pet cadastrado.</h4>
-                <a href="{{ route('pets.create') }}" class="btn btn-premium mt-3">Cadastrar agora</a>
+                <a href="{{ route('pets.create') }}" class="btn btn-primary mt-3">Cadastrar agora</a>
             </div>
         @endforelse
     </div>
 </x-app-layout>
+

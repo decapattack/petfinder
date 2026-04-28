@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card premium-card overflow-hidden">
+            <div class="card shadow-sm overflow-hidden">
                 <img src="{{ asset('storage/' . $pet->foto) }}"
                      class="img-fluid"
                      alt="{{ $pet->nome }}"
@@ -52,3 +52,4 @@
         </div>
     </div>
 </x-app-layout>
+

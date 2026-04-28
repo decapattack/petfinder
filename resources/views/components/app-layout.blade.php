@@ -4,19 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? config('app.name', 'PetFinder') }}</title>
-    <!-- Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 CDN (latest) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0d6efd">
     <style>
         :root { --primary-gradient: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%); }
-        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+        body { background-color: #f8f9fa; font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
         .navbar-brand { font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .premium-card { border: none; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); transition: transform 0.25s ease; }
-        .premium-card:hover { transform: translateY(-4px); }
-        .btn-premium { background: var(--primary-gradient); border: none; color: white; border-radius: 50px; font-weight: 600; padding: 10px 28px; }
-        .btn-premium:hover { opacity: 0.88; color: white; }
         .main-content { flex-grow: 1; padding: 2rem 0; }
     </style>
     @stack('styles')
@@ -33,7 +35,7 @@
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     @guest
                         <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
-                        <li class="nav-item ms-lg-2"><a class="btn btn-premium btn-sm" href="{{ route('register') }}">Cadastrar</a></li>
+                        <li class="nav-item ms-lg-2"><a class="btn btn-primary btn-sm" href="{{ route('register') }}">Cadastrar</a></li>
                     @else
                         <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Meus Pets</a></li>
 
@@ -98,7 +100,7 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -111,3 +113,4 @@
     @stack('scripts')
 </body>
 </html>
+
