@@ -14,5 +14,5 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
     })->create();

@@ -21,11 +21,28 @@ class RegistrationTest extends TestCase
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'telefone' => '(11) 99999-0000',
+            'latitude' => -23.5505,
+            'longitude' => -46.6333,
             'password' => 'password',
             'password_confirmation' => 'password',
         ]);
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_new_users_are_redirected_to_profile_when_geolocation_is_missing(): void
+    {
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'telefone' => '(11) 99999-0000',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect(route('profile.edit'));
     }
 }

@@ -27,6 +27,10 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'telefone' => fake()->numerify('(##) 9####-####'),
+            'latitude' => fake()->latitude(-33.75, 5.25),
+            'longitude' => fake()->longitude(-73.99, -34.79),
+            'pontos' => 0,
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];

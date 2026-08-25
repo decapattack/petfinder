@@ -3,15 +3,14 @@
 use App\Http\Controllers\AlertController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HealthRecordController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use Illuminate\Support\Facades\Route;
 
 // ─── Home ────────────────────────────────────────────────────────────────────
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // ─── Breeze auth routes (login, register, password, verification, logout) ────
 require __DIR__.'/auth.php';
@@ -30,6 +29,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard',   [PetController::class, 'index'])->name('dashboard');
     Route::get('/pets/create', [PetController::class, 'create'])->name('pets.create');
     Route::post('/pets',       [PetController::class, 'store'])->name('pets.store');
+    Route::get('/pets/{pet}/edit', [PetController::class, 'edit'])->name('pets.edit');
+    Route::put('/pets/{pet}', [PetController::class, 'update'])->name('pets.update');
+    Route::post('/pets/{pet}/media', [PetController::class, 'storeMedia'])->name('pets.media.store');
+    Route::delete('/pets/{pet}/media/{media}', [PetController::class, 'destroyMedia'])->name('pets.media.destroy');
     Route::delete('/pets/{pet}', [PetController::class, 'destroy'])->name('pets.destroy');
 
     // Alerts

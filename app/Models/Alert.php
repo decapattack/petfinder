@@ -14,10 +14,21 @@ class Alert extends Model
         'latitude_fuga',
         'longitude_fuga',
         'status',
+        'hero_id',
+        'hero_awarded_at',
+    ];
+
+    protected $casts = [
+        'hero_awarded_at' => 'datetime',
     ];
 
     public function pet()
     {
         return $this->belongsTo(Pet::class);
+    }
+
+    public function hero()
+    {
+        return $this->belongsTo(User::class, 'hero_id');
     }
 }

@@ -41,15 +41,18 @@
         <input type="hidden" name="longitude" id="lng">
 
         <div id="geo-alert" class="alert alert-info py-2 small d-none">
-            📍 <strong>Radar Pet:</strong> Precisamos da sua localização para alertas num raio de 1 KM.
+            📍 <strong>Radar Pet:</strong> Ative sua localização para emitir alertas num raio de 1 KM.
             <button type="button" class="btn btn-sm btn-outline-info ms-2" onclick="getLocation()">Ativar GPS</button>
         </div>
         <div id="geo-success" class="alert alert-success py-2 small d-none">
-            ✅ Localização capturada! Você já pode finalizar o cadastro.
+            ✅ Localização capturada!
+        </div>
+        <div id="geo-info" class="alert alert-warning py-2 small d-none">
+            ⚠️ Você pode finalizar o cadastro sem localização, mas precisará ativá-la no perfil para usar o Radar 1 KM.
         </div>
 
         <div class="d-grid gap-2 mt-3">
-            <x-primary-button id="btn-submit" class="btn-lg w-100" disabled>{{ __('Finalizar Cadastro') }}</x-primary-button>
+            <x-primary-button id="btn-submit" class="btn-lg w-100">{{ __('Finalizar Cadastro') }}</x-primary-button>
         </div>
 
         <div class="d-flex align-items-center my-4">
@@ -81,17 +84,25 @@
     window.onload = function() { geoAlert.classList.remove('d-none'); };
 
     function getLocation() {
-        if (!navigator.geolocation) { alert('Geolocalização não suportada.'); return; }
+        if (!navigator.geolocation) {
+            showNoLocation();
+            return;
+        }
         navigator.geolocation.getCurrentPosition(
             pos => {
                 document.getElementById('lat').value = pos.coords.latitude;
                 document.getElementById('lng').value = pos.coords.longitude;
                 geoAlert.classList.add('d-none');
+                document.getElementById('geo-info').classList.add('d-none');
                 geoSuccess.classList.remove('d-none');
-                submitBtn.disabled = false;
             },
-            () => alert('Não foi possível obter a localização.')
+            () => showNoLocation()
         );
+    }
+
+    function showNoLocation() {
+        geoAlert.classList.add('d-none');
+        document.getElementById('geo-info').classList.remove('d-none');
     }
 </script>
 @endpush

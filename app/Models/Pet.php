@@ -11,15 +11,12 @@ class Pet extends Model
     use HasFactory;
 
     protected $fillable = [
-        'uuid',
         'user_id',
         'nome',
         'especie',
         'raca',
         'cor',
         'condicoes_especiais',
-        'foto',
-        'status',
         'vet_name',
         'vet_phone',
     ];
@@ -62,5 +59,22 @@ class Pet extends Model
     public function schedules()
     {
         return $this->hasMany(PetSchedule::class)->orderBy('due_date', 'asc');
+    }
+
+    /**
+     * Relacionamento: Mídias do pet (fotos e vídeos)
+     */
+    public function media()
+    {
+        return $this->hasMany(PetMedia::class);
+    }
+
+    /**
+     * Atributo: Foto de capa (primeira foto disponível, ou qualquer mídia se não houver foto)
+     */
+    public function getCoverPhotoAttribute()
+    {
+        $firstImage = $this->media()->where('type', 'image')->first();
+        return $firstImage ?: $this->media()->first();
     }
 }

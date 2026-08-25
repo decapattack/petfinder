@@ -16,9 +16,25 @@
         @forelse($pets as $pet)
             <div class="col-md-4 mb-4">
                 <div class="card shadow-sm h-100 {{ $pet->status == 'desaparecido' ? 'border-danger border-3 shadow' : '' }}">
-                    <img src="{{ asset('storage/' . $pet->foto) }}" class="card-img-top" alt="{{ $pet->nome }}" style="height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                    @if($pet->cover_photo)
+                        @if($pet->cover_photo->type === 'video')
+                            <video src="{{ asset('storage/' . $pet->cover_photo->path) }}" class="card-img-top" style="height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;" autoplay muted loop playsinline></video>
+                        @else
+                            <img src="{{ asset('storage/' . $pet->cover_photo->path) }}" class="card-img-top" alt="{{ $pet->nome }}" style="height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                        @endif
+                    @else
+                        <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                            <i class="bi bi-image" style="font-size: 3rem; color: rgba(0,0,0,.15);"></i>
+                        </div>
+                    @endif
                     <div class="card-body">
-                        <h5 class="card-title fw-bold">{{ $pet->nome }}</h5>
+                        <h5 class="card-title fw-bold">
+                            @auth
+                                <a href="{{ route('pets.edit', $pet) }}" class="text-decoration-none text-dark link-primary">{{ $pet->nome }}</a>
+                            @else
+                                <a href="{{ url('/pet/' . $pet->uuid) }}" class="text-decoration-none text-dark link-primary">{{ $pet->nome }}</a>
+                            @endauth
+                        </h5>
                         <p class="card-text text-muted">{{ $pet->especie }} - {{ $pet->raca }}</p>
                         
                         <div class="d-flex align-items-center mb-3">

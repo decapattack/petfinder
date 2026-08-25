@@ -61,6 +61,15 @@
             </div>
         </div>
 
+        <div class="mb-3 form-check">
+            <input type="hidden" name="show_phone_on_public_page" value="0">
+            <input type="checkbox" name="show_phone_on_public_page" id="show_phone_on_public_page" value="1" class="form-check-input" {{ old('show_phone_on_public_page', $user->show_phone_on_public_page) ? 'checked' : '' }}>
+            <label for="show_phone_on_public_page" class="form-check-label">
+                Permitir que meu telefone apareça na página pública quando meu pet estiver perdido
+            </label>
+            <x-input-error :messages="$errors->get('show_phone_on_public_page')" />
+        </div>
+
         <div class="d-flex align-items-center gap-3">
             <x-primary-button>{{ __('Salvar') }}</x-primary-button>
 

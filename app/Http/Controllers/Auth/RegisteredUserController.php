@@ -34,8 +34,8 @@ class RegisteredUserController extends Controller
             'name'      => ['required', 'string', 'max:255'],
             'email'     => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'telefone'  => ['required', 'string', 'max:20'],
-            'latitude'  => ['required', 'numeric'],
-            'longitude' => ['required', 'numeric'],
+            'latitude'  => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'password'  => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -52,6 +52,12 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
+        // Require geolocation before using the 1 KM radar
+        if (!$user->latitude || !$user->longitude) {
+            return redirect()->route('profile.edit')
+                ->with('info', 'Ative sua localização no perfil para usar o Radar 1 KM.');
+        }
 
         return redirect(route('dashboard', absolute: false));
     }

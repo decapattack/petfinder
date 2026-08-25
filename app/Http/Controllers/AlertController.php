@@ -55,9 +55,11 @@ class AlertController extends Controller
 
     public function resolve(Request $request, Alert $alert)
     {
+        $alert->load('pet');
         $pet = $alert->pet;
 
-        if ($pet->user_id !== Auth::id()) {
+        // Ensure the alert belongs to a pet owned by the authenticated user
+        if (!$pet || $pet->user_id !== Auth::id()) {
             abort(403);
         }
 
@@ -74,9 +76,15 @@ class AlertController extends Controller
         $heroMessage = '';
         if ($request->filled('hero_email')) {
             $hero = User::where('email', $request->hero_email)->first();
-            if ($hero && $hero->id !== Auth::id()) {
+
+            if ($hero && $hero->id !== Auth::id() && !$alert->hero_id) {
                 $hero->increment('pontos', 50);
+                $alert->update([
+                    'hero_id' => $hero->id,
+                    'hero_awarded_at' => now(),
+                ]);
             }
+
             // Always show the same message regardless of whether hero was found
             $heroMessage = ' Se o e-mail informado pertencer a um usuário PetFinder, ele receberá os pontos!';
         }

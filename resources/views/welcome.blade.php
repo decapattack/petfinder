@@ -118,19 +118,19 @@
     <div class="container">
         <div class="row g-3 text-center">
             <div class="col-6 col-md-3 stat-item">
-                <div class="stat-num">{{ \App\Models\Pet::where('status', 'seguro')->count() + 1247 }}</div>
+                <div class="stat-num">{{ $stats['found'] }}</div>
                 <div class="stat-label">Pets Reencontrados</div>
             </div>
             <div class="col-6 col-md-3 stat-item">
-                <div class="stat-num">{{ \App\Models\Pet::where('status', 'desaparecido')->count() + 389 }}</div>
+                <div class="stat-num">{{ $stats['active_alerts'] }}</div>
                 <div class="stat-label">Alertas Ativos</div>
             </div>
             <div class="col-6 col-md-3 stat-item">
-                <div class="stat-num">{{ \App\Models\User::count() + 15800 }}</div>
+                <div class="stat-num">{{ $stats['volunteers'] }}</div>
                 <div class="stat-label">Voluntários</div>
             </div>
             <div class="col-6 col-md-3 stat-item">
-                <div class="stat-num">52</div>
+                <div class="stat-num">{{ $stats['cities'] }}</div>
                 <div class="stat-label">Cidades</div>
             </div>
         </div>
@@ -153,15 +153,22 @@
             @endauth
         </div>
         <div class="row g-4">
-            @forelse(\App\Models\Pet::where('status', 'desaparecido')->with('user')->latest()->take(4)->get() as $pet)
+            @forelse($lostPets as $pet)
                 <div class="col-sm-6 col-lg-3">
                     <div class="pet-card">
-                        <div class="pet-card-img" style="background-image: url('{{ $pet->foto ? asset('storage/' . $pet->foto) : '' }}'); background-color: #f0f0f0;">
-                            @if(!$pet->foto)
+                        @if($pet->cover_photo)
+                            @if($pet->cover_photo->type === 'video')
+                                <div class="pet-card-img" style="background-color: #f0f0f0; overflow: hidden;">
+                                    <video src="{{ asset('storage/' . $pet->cover_photo->path) }}" style="width: 100%; height: 100%; object-fit: cover;" autoplay muted loop playsinline></video>
+                            @else
+                                <div class="pet-card-img" style="background-image: url('{{ asset('storage/' . $pet->cover_photo->path) }}'); background-color: #f0f0f0;">
+                            @endif
+                        @else
+                            <div class="pet-card-img" style="background-color: #f0f0f0;">
                                 <div class="img-placeholder d-flex align-items-center justify-content-center h-100">
                                     <i class="bi bi-image" style="font-size: 3rem; color: rgba(0,0,0,.15);"></i>
                                 </div>
-                            @endif
+                        @endif
                             <span class="pet-badge lost"><i class="bi bi-exclamation-circle-fill"></i> PERDIDO</span>
                         </div>
                         <div class="pet-card-body">

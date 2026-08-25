@@ -29,6 +29,7 @@ class ProfileUpdateRequest extends FormRequest
             'telefone'  => ['nullable', 'string', 'max:20'],
             'latitude'  => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'show_phone_on_public_page' => ['boolean'],
         ];
     }
 }

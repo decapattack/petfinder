@@ -18,10 +18,22 @@
                     <i class="bi bi-arrow-left"></i>
                 </a>
                 <div class="d-flex align-items-center">
-                    <img src="{{ asset('storage/' . $pet->foto) }}" 
-                         alt="{{ $pet->nome }}" 
-                         class="rounded-circle me-3" 
-                         style="width: 60px; height: 60px; object-fit: cover; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                    @if($pet->cover_photo && $pet->cover_photo->type === 'video')
+                        <video src="{{ asset('storage/' . $pet->cover_photo->path) }}" 
+                               class="rounded-circle me-3" 
+                               style="width: 60px; height: 60px; object-fit: cover; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" 
+                               autoplay muted loop playsinline></video>
+                    @elseif($pet->cover_photo)
+                        <img src="{{ asset('storage/' . $pet->cover_photo->path) }}" 
+                             alt="{{ $pet->nome }}" 
+                             class="rounded-circle me-3" 
+                             style="width: 60px; height: 60px; object-fit: cover; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                    @else
+                        <div class="rounded-circle me-3 bg-light d-flex align-items-center justify-content-center" 
+                             style="width: 60px; height: 60px; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                            <i class="bi bi-image" style="font-size: 1.5rem; color: rgba(0,0,0,.15);"></i>
+                        </div>
+                    @endif
                     <div>
                         <h2 class="h4 mb-0 fw-bold">{{ $pet->nome }}</h2>
                         <span class="badge bg-light text-muted border">Saúde & Bem-estar</span>

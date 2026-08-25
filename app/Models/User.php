@@ -26,6 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'pontos',
         'provider',
         'provider_id',
+        'show_phone_on_public_page',
     ];
 
     /**
@@ -48,6 +49,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'show_phone_on_public_page' => 'boolean',
         ];
     }
 

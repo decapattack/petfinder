@@ -51,13 +51,13 @@
                                 @error('cor')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
-
                         <div class="mb-3">
-                            <label class="form-label">Foto do Pet</label>
-                            <input type="file" name="foto" class="form-control @error('foto') is-invalid @enderror"
-                                   required accept="image/*">
-                            <div class="form-text">Dica: Uma foto clara ajuda na identificação rápida.</div>
-                            @error('foto')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <label class="form-label fw-bold">Mídias do Pet (Fotos e Vídeos)</label>
+                            <input type="file" name="media[]" class="form-control @error('media') is-invalid @enderror @error('media.*') is-invalid @enderror"
+                                   required accept="image/*,video/*" multiple>
+                            <div class="form-text">Dica: Envie fotos claras e, se possível, um vídeo curto para ajudar na identificação rápida. Você pode selecionar múltiplos arquivos.</div>
+                            @error('media')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                            @error('media.*')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="mb-4">
