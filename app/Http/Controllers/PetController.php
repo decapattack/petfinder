@@ -38,6 +38,7 @@ class PetController extends Controller
             'raca'                => 'required|string|max:100',
             'cor'                 => 'required|string|max:100',
             'condicoes_especiais' => 'nullable|string|max:500',
+            'is_public'           => 'nullable|boolean',
             'media'               => 'required_without:video_url|array|min:1',
             'media.*'             => 'file|image|mimes:jpeg,png,jpg,webp,bmp,gif|max:20480',
             'video_url'           => 'nullable|url|max:500',
@@ -49,12 +50,13 @@ class PetController extends Controller
         ]);
 
         $pet = Pet::create([
-            'user_id' => Auth::id(),
-            'nome' => $request->nome,
-            'especie' => $request->especie,
-            'raca' => $request->raca,
-            'cor' => $request->cor,
+            'user_id'             => Auth::id(),
+            'nome'                => $request->nome,
+            'especie'             => $request->especie,
+            'raca'                => $request->raca,
+            'cor'                 => $request->cor,
             'condicoes_especiais' => $request->condicoes_especiais,
+            'is_public'           => $request->has('is_public') ? $request->boolean('is_public') : true,
         ]);
 
         if ($request->hasFile('media')) {
@@ -83,6 +85,18 @@ class PetController extends Controller
     public function showPublic($uuid)
     {
         $pet = Pet::where('uuid', $uuid)->with('user', 'media')->firstOrFail();
+
+        $isOwner = Auth::check() && Auth::id() === $pet->user_id;
+        $isMissing = $pet->status === 'desaparecido';
+
+        // Se o perfil estiver privado:
+        // - Dono tem acesso irrestrito para conferir/gerenciar
+        // - Se o pet estiver desaparecido (alerta ativo), a página fica visível para viabilizar resgate
+        // - Caso contrário, o acesso público é bloqueado com 404 para proteger a privacidade
+        if (!$pet->is_public && !$isOwner && !$isMissing) {
+            abort(404, 'A página pública deste pet está desativada pelo tutor.');
+        }
+
         return view('pets.public', compact('pet'));
     }
 
@@ -161,7 +175,10 @@ class PetController extends Controller
             'raca'               => 'required|string|max:100',
             'cor'                => 'required|string|max:100',
             'condicoes_especiais'=> 'nullable|string|max:500',
+            'is_public'          => 'nullable|boolean',
         ]);
+
+        $validated['is_public'] = $request->boolean('is_public');
 
         $pet->update($validated);
 

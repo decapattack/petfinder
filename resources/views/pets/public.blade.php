@@ -56,6 +56,15 @@
                 </div>
 
                 <div class="card-body p-4 text-center">
+                    @if(!$pet->is_public && $pet->status !== 'desaparecido')
+                        <div class="alert alert-secondary py-2 px-3 mb-3 text-start small d-flex align-items-center rounded-3">
+                            <i class="bi bi-eye-slash-fill me-2 fs-5 text-secondary"></i>
+                            <div>
+                                <strong>Modo de Pré-visualização do Tutor:</strong> Esta página está <u>desativada para o público</u>. Visitantes não autorizados receberão erro 404.
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="mb-3">
                         <span class="badge {{ $pet->status == 'seguro' ? 'bg-success' : 'bg-danger' }} fs-6 p-2">
                             {{ $pet->status == 'seguro' ? 'ESTOU SEGURO' : 'ESTOU PERDIDO! 🚨' }}

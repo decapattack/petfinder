@@ -332,4 +332,119 @@ class PetTest extends TestCase
         $this->assertCount(0, $pet->media()->get());
         Storage::disk('public')->assertMissing($imagePath);
     }
+
+    public function test_public_page_is_accessible_when_is_public_is_true(): void
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $pet = Pet::create([
+            'user_id' => $user->id,
+            'nome' => 'Pipoca',
+            'especie' => 'Cachorro',
+            'raca' => 'Beagle',
+            'cor' => 'Tricolor',
+            'is_public' => true,
+        ]);
+
+        $response = $this->get("/pet/{$pet->uuid}");
+        $response->assertStatus(200);
+        $response->assertSee('Pipoca');
+    }
+
+    public function test_public_page_is_inaccessible_to_visitors_when_is_public_is_false(): void
+    {
+        $owner = User::factory()->create(['email_verified_at' => now()]);
+        $stranger = User::factory()->create(['email_verified_at' => now()]);
+        $pet = Pet::create([
+            'user_id' => $owner->id,
+            'nome' => 'Segredo',
+            'especie' => 'Gato',
+            'raca' => 'Siamês',
+            'cor' => 'Cinza',
+            'is_public' => false,
+            'status' => 'seguro',
+        ]);
+
+        // Visitante deslogado (guest) recebe 404
+        $guestResponse = $this->get("/pet/{$pet->uuid}");
+        $guestResponse->assertStatus(404);
+
+        // Outro usuário logado recebe 404
+        $strangerResponse = $this->actingAs($stranger)->get("/pet/{$pet->uuid}");
+        $strangerResponse->assertStatus(404);
+    }
+
+    public function test_owner_can_view_public_page_even_when_is_public_is_false(): void
+    {
+        $owner = User::factory()->create(['email_verified_at' => now()]);
+        $pet = Pet::create([
+            'user_id' => $owner->id,
+            'nome' => 'Segredo',
+            'especie' => 'Gato',
+            'raca' => 'Siamês',
+            'cor' => 'Cinza',
+            'is_public' => false,
+            'status' => 'seguro',
+        ]);
+
+        // Dono do pet consegue visualizar em modo pré-visualização
+        $ownerResponse = $this->actingAs($owner)->get("/pet/{$pet->uuid}");
+        $ownerResponse->assertStatus(200);
+        $ownerResponse->assertSee('Modo de Pré-visualização do Tutor');
+    }
+
+    public function test_public_page_is_accessible_when_pet_is_desaparecido_even_if_is_public_is_false(): void
+    {
+        $owner = User::factory()->create(['email_verified_at' => now()]);
+        $pet = Pet::create([
+            'user_id' => $owner->id,
+            'nome' => 'Perdido',
+            'especie' => 'Cachorro',
+            'raca' => 'Vira-lata',
+            'cor' => 'Marrom',
+            'is_public' => false,
+            'status' => 'desaparecido',
+        ]);
+
+        // Como está desaparecido, o resgate tem prioridade e visitantes podem ver a página
+        $response = $this->get("/pet/{$pet->uuid}");
+        $response->assertStatus(200);
+        $response->assertSee('Perdido');
+    }
+
+    public function test_user_can_toggle_is_public_setting_on_update(): void
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $pet = Pet::create([
+            'user_id' => $user->id,
+            'nome' => 'Thor',
+            'especie' => 'Cachorro',
+            'raca' => 'Pastor',
+            'cor' => 'Preto',
+            'is_public' => true,
+        ]);
+
+        // Desmarcar is_public
+        $response = $this->actingAs($user)->put("/pets/{$pet->id}", [
+            'nome' => 'Thor',
+            'especie' => 'Cachorro',
+            'raca' => 'Pastor',
+            'cor' => 'Preto',
+            // 'is_public' ausente ou false
+        ]);
+
+        $response->assertRedirect();
+        $this->assertFalse($pet->fresh()->is_public);
+
+        // Remarcar is_public
+        $response = $this->actingAs($user)->put("/pets/{$pet->id}", [
+            'nome' => 'Thor',
+            'especie' => 'Cachorro',
+            'raca' => 'Pastor',
+            'cor' => 'Preto',
+            'is_public' => '1',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertTrue($pet->fresh()->is_public);
+    }
 }

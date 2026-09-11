@@ -118,6 +118,20 @@
                                     @error('condicoes_especiais')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 
+                                <!-- Visibilidade Pública -->
+                                <div class="card bg-light border-0 p-3 mb-4 rounded-3">
+                                    <div class="form-check form-switch mb-0">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="is_public_edit" name="is_public" value="1"
+                                               {{ old('is_public', $pet->is_public) ? 'checked' : '' }}>
+                                        <label class="form-check-label fw-bold small" for="is_public_edit">
+                                            Página Pública Ativada (QR Code e link público)
+                                        </label>
+                                        <div class="form-text mt-1" style="font-size: 0.75rem;">
+                                            Se desmarcado, visitantes externos receberão erro 404 a menos que haja um alerta de desaparecimento ativo.
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary btn-lg rounded-pill">
                                         Salvar Alterações

@@ -17,8 +17,14 @@ class Pet extends Model
         'raca',
         'cor',
         'condicoes_especiais',
+        'status',
         'vet_name',
         'vet_phone',
+        'is_public',
+    ];
+
+    protected $casts = [
+        'is_public' => 'boolean',
     ];
 
     protected static function boot()

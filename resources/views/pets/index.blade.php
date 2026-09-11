@@ -49,6 +49,11 @@
                             <span class="badge {{ $pet->status == 'seguro' ? 'bg-success' : 'bg-danger animate-pulse' }}">
                                 {{ $pet->status == 'seguro' ? 'SEGURO' : '🚨 DESAPARECIDO' }}
                             </span>
+                            @if(!$pet->is_public)
+                                <span class="badge bg-secondary ms-2" title="Página pública desativada para visitantes">
+                                    <i class="bi bi-lock-fill me-1"></i>Privado
+                                </span>
+                            @endif
                         </div>
 
                         <div class="bg-light p-3 rounded text-center mb-3">

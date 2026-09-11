@@ -85,6 +85,20 @@
                             @error('condicoes_especiais')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
+                        <!-- Visibilidade Pública -->
+                        <div class="card bg-light border-0 p-3 mb-4 rounded-3">
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" role="switch" id="is_public" name="is_public" value="1"
+                                       {{ old('is_public', true) ? 'checked' : '' }}>
+                                <label class="form-check-label fw-bold" for="is_public">
+                                    Página Pública Ativada (QR Code e link público)
+                                </label>
+                                <div class="form-text mt-1">
+                                    Se desmarcado, visitantes externos receberão página não encontrada (404) a menos que um alerta de desaparecimento esteja ativo.
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary btn-lg">
                                 Salvar e Gerar Identificação
