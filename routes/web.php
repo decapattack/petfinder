@@ -29,6 +29,7 @@ Route::get('/auth/{provider}/callback', [AuthController::class, 'handleProviderC
 
 // ─── Public (no auth required) ───────────────────────────────────────────────
 Route::get('/pet/{uuid}', [PetController::class, 'showPublic'])->name('pets.public');
+Route::get('/pet/{uuid}/map', [PetController::class, 'showPublicMap'])->name('pets.public.map');
 
 // ─── Protected (logged in + email verified) ──────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -46,10 +47,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/pets/{pet}', [PetController::class, 'destroy'])->name('pets.destroy');
 
     // ── Alerts ───────────────────────────────────────────────────────────────
-    // Limite: máximo 2 alertas de desaparecimento por dia por usuário
-    Route::post('/alerts', [AlertController::class, 'store'])->middleware('throttle:2,1440')->name('alerts.store');
-    // Limite: máximo 10 notificações de teste por dia por usuário
-    Route::post('/alerts/test', [AlertController::class, 'testNotification'])->middleware('throttle:10,1440')->name('alerts.test');
+    Route::post('/alerts', [AlertController::class, 'store'])->middleware('throttle:10,1')->name('alerts.store');
+    Route::post('/alerts/test', [AlertController::class, 'testNotification'])->middleware('throttle:10,1')->name('alerts.test');
     // Limite: máximo 5 encerramentos de alerta por minuto (anti-spam)
     Route::post('/alerts/{alert}/resolve', [AlertController::class, 'resolve'])->middleware('throttle:5,1')->name('alerts.resolve');
 

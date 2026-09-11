@@ -72,7 +72,7 @@
                         <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">Sair</button>
+                                <button type="submit" class="btn btn-danger btn-sm rounded-pill px-3">Sair</button>
                             </form>
                         </li>
                     @endguest

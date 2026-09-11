@@ -50,7 +50,7 @@
         <div class="col-md-11">
             <!-- Header -->
             <div class="d-flex align-items-center mb-4">
-                <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                <a href="{{ route('dashboard') }}" class="btn btn-secondary rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
                     <i class="bi bi-arrow-left"></i>
                 </a>
                 <div>
@@ -132,6 +132,39 @@
                                     </div>
                                 </div>
 
+                                <!-- Localização Residencial do Pet -->
+                                @php
+                                    $currentLat = old('latitude', $pet->latitude ?? auth()->user()->latitude);
+                                    $currentLng = old('longitude', $pet->longitude ?? auth()->user()->longitude);
+                                @endphp
+                                <div class="card bg-light border-0 p-3 mb-4 rounded-3">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div class="fw-bold d-flex align-items-center">
+                                            <i class="bi bi-geo-alt-fill text-danger me-2"></i>Localização Residencial
+                                        </div>
+                                        <span class="badge {{ $currentLat && $currentLng ? 'bg-success' : 'bg-secondary' }}" id="petGpsBadge">
+                                            {{ $currentLat && $currentLng ? '📍 Definida' : '⚠️ Não definida' }}
+                                        </span>
+                                    </div>
+                                    <p class="small text-muted mb-2">
+                                        Ponto de busca padrão em alertas residenciais. Pode ser atualizado a qualquer momento.
+                                    </p>
+                                    <div class="d-flex flex-wrap align-items-center gap-2">
+                                        <button type="button" class="btn btn-outline-primary btn-sm rounded-pill d-inline-flex align-items-center" onclick="capturePetGps()" id="btnCaptureGps">
+                                            <i class="bi bi-crosshair me-1"></i><span id="btnCaptureGpsText">Atualizar via GPS</span>
+                                        </button>
+                                        <small class="text-muted" id="petGpsCoords">
+                                            @if($currentLat && $currentLng)
+                                                (Coordenadas salvas no cadastro)
+                                            @endif
+                                        </small>
+                                    </div>
+                                    <div id="petGpsFeedback" class="alert alert-warning py-1 px-2 small mt-2 mb-0" style="display: none;"></div>
+                                </div>
+
+                                <input type="hidden" name="latitude" id="pet_latitude" value="{{ $currentLat }}">
+                                <input type="hidden" name="longitude" id="pet_longitude" value="{{ $currentLng }}">
+
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary btn-lg rounded-pill">
                                         Salvar Alterações
@@ -151,7 +184,7 @@
                                     <h4 class="fw-bold mb-1">Mídias do Pet</h4>
                                     <p class="text-muted small mb-0">Fotos enviadas e vídeos externos incorporados.</p>
                                 </div>
-                                <button type="button" class="btn btn-outline-danger btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addVideoModal">
+                                <button type="button" class="btn btn-danger btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addVideoModal">
                                     <i class="bi bi-link-45deg me-1"></i>+ Link de Vídeo
                                 </button>
                             </div>
@@ -245,4 +278,54 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        function capturePetGps() {
+            const btn = document.getElementById('btnCaptureGps');
+            const btnText = document.getElementById('btnCaptureGpsText');
+            const badge = document.getElementById('petGpsBadge');
+            const coordsText = document.getElementById('petGpsCoords');
+            const feedback = document.getElementById('petGpsFeedback');
+
+            feedback.style.display = 'none';
+
+            if (!navigator.geolocation) {
+                feedback.textContent = 'Seu navegador não suporta geolocalização.';
+                feedback.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            btnText.textContent = 'Obtendo GPS...';
+
+            navigator.geolocation.getCurrentPosition(
+                function(pos) {
+                    document.getElementById('pet_latitude').value = pos.coords.latitude;
+                    document.getElementById('pet_longitude').value = pos.coords.longitude;
+                    btn.disabled = false;
+                    btnText.textContent = 'Atualizar via GPS';
+                    badge.className = 'badge bg-success';
+                    badge.textContent = '📍 Definida via GPS';
+                    coordsText.textContent = '(Localização atual capturada!)';
+                },
+                function(err) {
+                    btn.disabled = false;
+                    btnText.textContent = 'Atualizar via GPS';
+                    let errorMsg = 'Não foi possível obter a localização.';
+                    if (err.code === 1) {
+                        errorMsg = 'Permissão negada. Permita o acesso à localização no navegador.';
+                    } else if (err.code === 2) {
+                        errorMsg = 'Sinal de GPS indisponível no momento.';
+                    } else if (err.code === 3) {
+                        errorMsg = 'Tempo limite excedido ao buscar GPS.';
+                    }
+                    feedback.textContent = errorMsg;
+                    feedback.style.display = 'block';
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        }
+    </script>
+    @endpush
 </x-app-layout>

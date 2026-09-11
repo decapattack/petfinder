@@ -929,13 +929,14 @@
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
     }
 
-    .navbar-petfinder .btn-outline-secondary {
+    .navbar-petfinder .btn-secondary {
+        background-color: #4a5568;
         color: #ffffff;
-        border-color: rgba(255,255,255,0.4);
+        border: none;
     }
 
-    .navbar-petfinder .btn-outline-secondary:hover {
-        background-color: rgba(255,255,255,0.15);
+    .navbar-petfinder .btn-secondary:hover {
+        background-color: #2d3748;
         color: #ffffff;
     }
 

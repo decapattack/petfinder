@@ -14,7 +14,7 @@
         <div class="col-12">
             <!-- Header -->
             <div class="d-flex align-items-center mb-4">
-                <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                <a href="{{ route('dashboard') }}" class="btn btn-secondary rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
                     <i class="bi bi-arrow-left"></i>
                 </a>
                 <div class="d-flex align-items-center">
@@ -54,7 +54,7 @@
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="remove_vet" value="1">
-                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill">
+                                <button type="submit" class="btn btn-danger btn-sm rounded-pill">
                                     <i class="bi bi-x-circle me-1"></i> Desvincular Vet
                                 </button>
                             </form>
@@ -159,10 +159,10 @@
                                                 {{ \App\Models\HealthRecord::$categories[$record->category] ?? $record->category }}
                                             </span>
                                             <div class="d-flex justify-content-center gap-2">
-                                                <a href="{{ $record->view_url }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">Ver</a>
+                                                <a href="{{ $record->view_url }}" target="_blank" class="btn btn-sm btn-primary rounded-pill">Ver</a>
                                                 <form action="{{ route('pets.records.destroy', ['pet' => $pet, 'record' => $record]) }}" method="POST" onsubmit="return confirm('Excluir permanentemente?')">
                                                     @csrf @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">Excluir</button>
+                                                    <button type="submit" class="btn btn-sm btn-danger rounded-pill">Excluir</button>
                                                 </form>
                                             </div>
                                         </div>

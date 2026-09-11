@@ -41,13 +41,13 @@
     </div>
 
     <div class="d-flex justify-content-center gap-2 mb-4">
-        <a href="{{ route('auth.social.redirect', 'google') }}" class="btn btn-outline-dark rounded-circle p-2" title="Google">
+        <a href="{{ route('auth.social.redirect', 'google') }}" class="btn btn-dark rounded-circle p-2" title="Google">
             <img src="https://img.icons8.com/color/24/google-logo.png" alt="Google">
         </a>
-        <a href="{{ route('auth.social.redirect', 'twitter-oauth-2') }}" class="btn btn-outline-dark rounded-circle p-2" title="X">
+        <a href="{{ route('auth.social.redirect', 'twitter-oauth-2') }}" class="btn btn-dark rounded-circle p-2" title="X">
             <img src="https://img.icons8.com/ios-filled/24/twitterx--v2.png" alt="X">
         </a>
-        <a href="{{ route('auth.social.redirect', 'microsoft') }}" class="btn btn-outline-dark rounded-circle p-2" title="Microsoft">
+        <a href="{{ route('auth.social.redirect', 'microsoft') }}" class="btn btn-dark rounded-circle p-2" title="Microsoft">
             <img src="https://img.icons8.com/color/24/microsoft.png" alt="Microsoft">
         </a>
     </div>

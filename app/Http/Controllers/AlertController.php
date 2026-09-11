@@ -19,7 +19,10 @@ class AlertController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'pet_id' => 'required|exists:pets,id',
+            'pet_id'    => 'required|exists:pets,id',
+            'origem'    => 'nullable|in:casa,rua',
+            'latitude'  => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ]);
 
         $pet = Pet::findOrFail($request->pet_id);
@@ -33,26 +36,44 @@ class AlertController extends Controller
         }
 
         $user = Auth::user();
-        
-        if (!$user->latitude || !$user->longitude) {
+        $origem = $request->input('origem', 'casa');
+
+        if ($origem === 'rua' && $request->filled('latitude') && $request->filled('longitude')) {
+            $fugaLat = (float) $request->latitude;
+            $fugaLng = (float) $request->longitude;
+        } else {
+            // Origem Casa: busca do pet, com fallback no tutor
+            $fugaLat = $pet->latitude ?? $user->latitude;
+            $fugaLng = $pet->longitude ?? $user->longitude;
+
+            // Se o pet ainda não tinha coordenadas cadastradas, salva as do tutor nele
+            if (is_null($pet->latitude) && !is_null($user->latitude)) {
+                $pet->update([
+                    'latitude' => $user->latitude,
+                    'longitude' => $user->longitude,
+                ]);
+            }
+        }
+
+        if (is_null($fugaLat) || is_null($fugaLng)) {
             return redirect()->route('profile.edit')
-                ->with('error', '⚠️ Você precisa cadastrar sua localização no perfil antes de emitir um alerta para que o Radar 1 KM funcione.');
+                ->with('error', '⚠️ Você precisa cadastrar sua localização antes de emitir um alerta para que o Radar 1 KM funcione.');
         }
 
         $alert = Alert::create([
             'pet_id'         => $pet->id,
-            'latitude_fuga'  => $user->latitude,
-            'longitude_fuga' => $user->longitude,
+            'latitude_fuga'  => $fugaLat,
+            'longitude_fuga' => $fugaLng,
             'status'         => 'ativo',
         ]);
 
         $pet->update(['status' => 'desaparecido']);
 
-        $neighbors = $this->getNeighborsWithinRadius($user->latitude, $user->longitude, 1);
+        $neighbors = $this->getNeighborsWithinRadius($fugaLat, $fugaLng, 1);
         $neighborsToNotify = $neighbors->where('id', '!=', $user->id);
         Notification::send($neighborsToNotify, new PetLostNotification($pet));
 
-        return back()->with('success', 'Alerta emitido! Os heróis vizinhos foram notificados.');
+        return back()->with('success', 'Alerta emitido! Os heróis vizinhos foram notificados no raio da fuga.');
     }
 
     public function resolve(Request $request, Alert $alert)

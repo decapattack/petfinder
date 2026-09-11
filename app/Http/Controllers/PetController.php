@@ -39,6 +39,8 @@ class PetController extends Controller
             'raca'                => 'required|string|max:100',
             'cor'                 => 'required|string|max:100',
             'condicoes_especiais' => 'nullable|string|max:500',
+            'latitude'            => 'nullable|numeric|between:-90,90',
+            'longitude'           => 'nullable|numeric|between:-180,180',
             'is_public'           => 'nullable|boolean',
             'media'               => 'required_without:video_url|array|min:1',
             'media.*'             => 'file|image|mimes:jpeg,png,jpg,webp,bmp,gif|max:20480',
@@ -50,13 +52,19 @@ class PetController extends Controller
             'video_url.url'          => 'Informe uma URL válida para o vídeo (YouTube, TikTok ou Instagram).',
         ]);
 
+        $user = Auth::user();
+        $lat = $request->filled('latitude') ? $request->latitude : $user->latitude;
+        $lng = $request->filled('longitude') ? $request->longitude : $user->longitude;
+
         $pet = Pet::create([
-            'user_id'             => Auth::id(),
+            'user_id'             => $user->id,
             'nome'                => $request->nome,
             'especie'             => $request->especie,
             'raca'                => $request->raca,
             'cor'                 => $request->cor,
             'condicoes_especiais' => $request->condicoes_especiais,
+            'latitude'            => $lat,
+            'longitude'           => $lng,
             'is_public'           => $request->has('is_public') ? $request->boolean('is_public') : true,
         ]);
 
@@ -85,20 +93,18 @@ class PetController extends Controller
 
     public function showPublic($uuid)
     {
-        $pet = Pet::where('uuid', $uuid)->with('user', 'media')->firstOrFail();
+        $pet = Pet::where('uuid', $uuid)->with('user', 'media', 'alerts')->firstOrFail();
 
         $isOwner = Auth::check() && Auth::id() === $pet->user_id;
         $isMissing = $pet->status === 'desaparecido';
 
-        // Se o perfil estiver privado:
-        // - Dono tem acesso irrestrito para conferir/gerenciar
-        // - Se o pet estiver desaparecido (alerta ativo), a página fica visível para viabilizar resgate
-        // - Caso contrário, o acesso público é bloqueado com 404 para proteger a privacidade
         if (!$pet->is_public && !$isOwner && !$isMissing) {
             abort(404, 'A página pública deste pet está desativada pelo tutor.');
         }
 
-        return view('pets.public', compact('pet'));
+        $alert = $pet->active_alert ?: $pet->alerts()->latest()->first();
+
+        return view('pets.public', compact('pet', 'alert'));
     }
 
     public function destroy(Pet $pet)
@@ -194,10 +200,12 @@ class PetController extends Controller
         $validated = $request->validate([
             'nome'               => 'required|string|max:255',
             'especie'            => 'required|string|max:100',
-            'raca'               => 'required|string|max:100',
-            'cor'                => 'required|string|max:100',
-            'condicoes_especiais'=> 'nullable|string|max:500',
-            'is_public'          => 'nullable|boolean',
+            'raca'                => 'required|string|max:100',
+            'cor'                 => 'required|string|max:100',
+            'condicoes_especiais' => 'nullable|string|max:500',
+            'latitude'            => 'nullable|numeric|between:-90,90',
+            'longitude'           => 'nullable|numeric|between:-180,180',
+            'is_public'           => 'nullable|boolean',
         ]);
 
         $validated['is_public'] = $request->boolean('is_public');
@@ -270,5 +278,24 @@ class PetController extends Controller
         $media->delete();
 
         return back()->with('success', 'Mídia removida com sucesso!');
+    }
+
+    /**
+     * SHOW PUBLIC MAP: Exibe a página do mapa para dispositivos móveis ou visualização separada
+     */
+    public function showPublicMap($uuid)
+    {
+        $pet = Pet::where('uuid', $uuid)->with('user', 'alerts')->firstOrFail();
+
+        $isOwner = Auth::check() && Auth::id() === $pet->user_id;
+        $isMissing = $pet->status === 'desaparecido';
+
+        if (!$pet->is_public && !$isOwner && !$isMissing) {
+            abort(404, 'A página pública deste pet está desativada.');
+        }
+
+        $alert = $pet->active_alert ?: $pet->alerts()->latest()->first();
+
+        return view('pets.map', compact('pet', 'alert'));
     }
 }

@@ -25,7 +25,7 @@
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div class="alert alert-warning py-2 small mt-2">
                     {{ __('Seu endereço de e-mail não está verificado.') }}
-                    <button form="send-verification" type="submit" class="btn btn-sm btn-outline-warning ms-2">
+                    <button form="send-verification" type="submit" class="btn btn-sm btn-warning ms-2">
                         {{ __('Reenviar verificação') }}
                     </button>
                 </div>
@@ -54,7 +54,7 @@
                 <x-text-input id="longitude" name="longitude" type="text" :value="old('longitude', $user->longitude)" readonly />
             </div>
             <div class="col-12 mt-2">
-                <button type="button" class="btn btn-sm btn-outline-primary" onclick="captureLocation()">
+                <button type="button" class="btn btn-sm btn-primary" onclick="captureLocation()">
                     📍 Atualizar Localização (Radar 1 KM)
                 </button>
                 <div id="geo-status" class="form-text"></div>

@@ -18,6 +18,8 @@ class Pet extends Model
         'raca',
         'cor',
         'condicoes_especiais',
+        'latitude',
+        'longitude',
         'status',
         'is_public',
     ];

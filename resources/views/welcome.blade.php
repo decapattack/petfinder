@@ -63,7 +63,7 @@
                 </div>
             @else
                 <div class="d-none d-lg-flex align-items-center gap-2">
-                    <a href="{{ route('login') }}" class="btn btn-outline-secondary" style="font-weight: 600; border-radius: 50px; padding: .5rem 1.25rem;">
+                    <a href="{{ route('login') }}" class="btn btn-secondary" style="font-weight: 600; border-radius: 50px; padding: .5rem 1.25rem;">
                         Entrar
                     </a>
                     <a href="{{ route('register') }}" class="btn btn-reportar">
@@ -426,13 +426,13 @@
             <div class="modal-body p-4">
                 <p class="text-center mb-4">Você encontrou um animal perdido? Veja como ajudar:</p>
                 <div class="d-grid gap-2">
-                    <a href="#" class="btn btn-outline-secondary text-start">
+                    <a href="#" class="btn btn-secondary text-start">
                         <i class="bi bi-upc-scan me-2"></i>Ler QR Code da coleira
                     </a>
-                    <a href="#" class="btn btn-outline-secondary text-start">
+                    <a href="#" class="btn btn-secondary text-start">
                         <i class="bi bi-search me-2"></i>Buscar alertas na região
                     </a>
-                    <a href="tel:190" class="btn btn-outline-secondary text-start">
+                    <a href="tel:190" class="btn btn-secondary text-start">
                         <i class="bi bi-telephone me-2"></i>Contatar autoridades (190)
                     </a>
                 </div>

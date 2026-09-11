@@ -1,4 +1,17 @@
 <x-app-layout>
+    <x-slot name="title">{{ $pet->nome }} - PetFinder</x-slot>
+
+    @push('styles')
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+        <style>
+            #map-desktop {
+                width: 100%;
+                aspect-ratio: 1 / 1;
+                border-radius: 12px;
+            }
+        </style>
+    @endpush
+
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-sm overflow-hidden">
@@ -20,7 +33,7 @@
                                     @else
                                         <div class="d-flex flex-column align-items-center justify-content-center bg-dark text-white p-4" style="height: 400px;">
                                             <i class="bi bi-play-circle fs-1 mb-2 text-danger"></i>
-                                            <a href="{{ $item->path }}" target="_blank" class="btn btn-outline-light btn-sm">
+                                            <a href="{{ $item->path }}" target="_blank" class="btn btn-light btn-sm">
                                                 <i class="bi bi-box-arrow-up-right me-1"></i> Abrir Vídeo
                                             </a>
                                         </div>
@@ -81,6 +94,32 @@
                         </div>
                     @endif
 
+                    @php
+                        $rawLat = isset($alert) && $alert ? $alert->latitude_fuga : ($pet->latitude ?? $pet->user->latitude ?? null);
+                        $rawLng = isset($alert) && $alert ? $alert->longitude_fuga : ($pet->longitude ?? $pet->user->longitude ?? null);
+                    @endphp
+
+                    @if($rawLat && $rawLng)
+                        <!-- Exibição do Mapa: PC na mesma página | Mobile com botão para nova página -->
+                        <div class="my-3">
+                            <!-- Mapa para PC (Desktop: d-none d-md-block) -->
+                            <div class="d-none d-md-block border rounded-3 p-3 bg-light text-start">
+                                <h6 class="fw-bold mb-2 text-dark d-flex align-items-center">
+                                    <i class="bi bi-geo-alt-fill me-2 text-danger"></i>Região do Desaparecimento
+                                </h6>
+                                <div id="map-desktop"></div>
+                                <small class="text-muted d-block mt-1">Margem de segurança ~100m para proteção de privacidade.</small>
+                            </div>
+
+                            <!-- Botão para Mobile (d-md-none) -->
+                            <div class="d-md-none">
+                                <a href="{{ route('pets.public.map', $pet->uuid) }}" class="btn btn-primary btn-lg w-100 rounded-pill shadow-sm py-3 fw-bold">
+                                    <i class="bi bi-map-fill me-2"></i>Exibir no Mapa 🗺️
+                                </a>
+                            </div>
+                        </div>
+                    @endif
+
                     <hr class="my-4">
 
                     <h5 class="mb-3">Encontrou este pet?</h5>
@@ -105,7 +144,7 @@
                                 💬 Falar via WhatsApp
                             </a>
                             <a href="tel:+55{{ $phoneDigits }}"
-                               class="btn btn-outline-primary btn-lg">
+                               class="btn btn-primary btn-lg">
                                 📞 Ligar para Responsável
                             </a>
                         </div>
@@ -126,4 +165,35 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const desktopMapEl = document.getElementById('map-desktop');
+                const rawLat = {{ $rawLat ?? 'null' }};
+                const rawLng = {{ $rawLng ?? 'null' }};
+
+                if (desktopMapEl && rawLat !== null && rawLng !== null) {
+                    // Arredondamento para 3 casas decimais (grid de ~100m) para privacidade
+                    const lat = Number(parseFloat(rawLat).toFixed(3));
+                    const lng = Number(parseFloat(rawLng).toFixed(3));
+
+                    const map = L.map('map-desktop').setView([lat, lng], 14);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '© OpenStreetMap'
+                    }).addTo(map);
+
+                    L.circle([lat, lng], {
+                        color: '#d9534f',
+                        fillColor: '#f0ad4e',
+                        fillOpacity: 0.35,
+                        radius: 1000
+                    }).addTo(map).bindPopup("<b>Região do Desaparecimento</b>");
+                }
+            });
+        </script>
+    @endpush
 </x-app-layout>

@@ -95,9 +95,41 @@
                                 </label>
                                 <div class="form-text mt-1">
                                     Se desmarcado, visitantes externos receberão página não encontrada (404) a menos que um alerta de desaparecimento esteja ativo.
-                                </div>
                             </div>
                         </div>
+
+                        <!-- Localização Residencial do Pet -->
+                        @php
+                            $defaultLat = old('latitude', auth()->user()->latitude);
+                            $defaultLng = old('longitude', auth()->user()->longitude);
+                        @endphp
+                        <div class="card bg-light border-0 p-3 mb-4 rounded-3">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="fw-bold d-flex align-items-center">
+                                    <i class="bi bi-geo-alt-fill text-danger me-2"></i>Localização Residencial do Pet
+                                </div>
+                                <span class="badge {{ $defaultLat && $defaultLng ? 'bg-success' : 'bg-secondary' }}" id="petGpsBadge">
+                                    {{ $defaultLat && $defaultLng ? '📍 Definida' : '⚠️ Não definida' }}
+                                </span>
+                            </div>
+                            <p class="small text-muted mb-2">
+                                Utilizada como ponto de partida das buscas caso o pet fuja de casa. Por padrão, herda o endereço do seu perfil.
+                            </p>
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill d-inline-flex align-items-center" onclick="capturePetGps()" id="btnCaptureGps">
+                                    <i class="bi bi-crosshair me-1"></i><span id="btnCaptureGpsText">Usar meu GPS atual</span>
+                                </button>
+                                <small class="text-muted" id="petGpsCoords">
+                                    @if($defaultLat && $defaultLng)
+                                        (Coordenadas salvas no cadastro)
+                                    @endif
+                                </small>
+                            </div>
+                            <div id="petGpsFeedback" class="alert alert-warning py-1 px-2 small mt-2 mb-0" style="display: none;"></div>
+                        </div>
+
+                        <input type="hidden" name="latitude" id="pet_latitude" value="{{ $defaultLat }}">
+                        <input type="hidden" name="longitude" id="pet_longitude" value="{{ $defaultLng }}">
 
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary btn-lg">
@@ -109,4 +141,54 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        function capturePetGps() {
+            const btn = document.getElementById('btnCaptureGps');
+            const btnText = document.getElementById('btnCaptureGpsText');
+            const badge = document.getElementById('petGpsBadge');
+            const coordsText = document.getElementById('petGpsCoords');
+            const feedback = document.getElementById('petGpsFeedback');
+
+            feedback.style.display = 'none';
+
+            if (!navigator.geolocation) {
+                feedback.textContent = 'Seu navegador não suporta geolocalização.';
+                feedback.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            btnText.textContent = 'Obtendo GPS...';
+
+            navigator.geolocation.getCurrentPosition(
+                function(pos) {
+                    document.getElementById('pet_latitude').value = pos.coords.latitude;
+                    document.getElementById('pet_longitude').value = pos.coords.longitude;
+                    btn.disabled = false;
+                    btnText.textContent = 'Atualizar com GPS atual';
+                    badge.className = 'badge bg-success';
+                    badge.textContent = '📍 Definida via GPS';
+                    coordsText.textContent = '(Localização atual capturada!)';
+                },
+                function(err) {
+                    btn.disabled = false;
+                    btnText.textContent = 'Usar meu GPS atual';
+                    let errorMsg = 'Não foi possível obter a localização.';
+                    if (err.code === 1) {
+                        errorMsg = 'Permissão negada. Permita o acesso à localização no navegador.';
+                    } else if (err.code === 2) {
+                        errorMsg = 'Sinal de GPS indisponível no momento.';
+                    } else if (err.code === 3) {
+                        errorMsg = 'Tempo limite excedido ao buscar GPS.';
+                    }
+                    feedback.textContent = errorMsg;
+                    feedback.style.display = 'block';
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        }
+    </script>
+    @endpush
 </x-app-layout>
