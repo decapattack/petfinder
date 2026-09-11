@@ -221,4 +221,22 @@ class SecurityMediumPriorityTest extends TestCase
         $response->assertRedirect(route('login'));
         $response->assertSessionHasErrors(['email']);
     }
+
+    // ─── Item 9: Content Security Policy (CSP) for Embed Iframes ─────────────
+
+    public function test_csp_header_configures_frame_src_properly(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+        $csp = $response->headers->get('Content-Security-Policy');
+
+        $this->assertNotNull($csp, 'Header Content-Security-Policy está ausente.');
+        $this->assertStringContainsString('frame-src', $csp);
+        $this->assertStringContainsString("'self'", $csp);
+        $this->assertStringContainsString('https://www.youtube.com', $csp);
+        $this->assertStringContainsString('https://www.youtube-nocookie.com', $csp);
+        $this->assertStringContainsString('https://www.instagram.com', $csp);
+        $this->assertStringContainsString('https://www.tiktok.com', $csp);
+    }
 }

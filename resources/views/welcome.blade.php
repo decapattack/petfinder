@@ -19,10 +19,7 @@
 <!-- ============ NAVBAR ============ -->
 <nav class="navbar navbar-expand-lg navbar-petfinder sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="{{ route('home') }}">
-            <i class="bi bi-search-heart paw-icon"></i>
-            <span>PetFinder</span>
-        </a>
+        <a class="navbar-brand" href="{{ route('home') }}" style="font-family:'Inter',sans-serif;font-weight:800;font-size:1.75rem;color:#0d6efd;text-decoration:none;display:flex;align-items:center;gap:.4rem;"><svg width="38" height="28" viewBox="0 0 190 140" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><g transform="translate(5,0) rotate(-12,50,75)"><ellipse cx="50" cy="80" rx="20" ry="22"/><ellipse cx="21" cy="52" rx="9" ry="13" transform="rotate(-20 21 52)"/><ellipse cx="37" cy="41" rx="8" ry="12" transform="rotate(-5 37 41)"/><ellipse cx="63" cy="41" rx="8" ry="12" transform="rotate(5 63 41)"/><ellipse cx="79" cy="52" rx="9" ry="13" transform="rotate(20 79 52)"/></g><g transform="translate(95,18) rotate(12,50,75)"><ellipse cx="50" cy="80" rx="22" ry="24"/><ellipse cx="20" cy="50" rx="10" ry="14" transform="rotate(-20 20 50)"/><ellipse cx="37" cy="39" rx="9" ry="13" transform="rotate(-5 37 39)"/><ellipse cx="63" cy="39" rx="9" ry="13" transform="rotate(5 63 39)"/><ellipse cx="80" cy="50" rx="10" ry="14" transform="rotate(20 80 50)"/></g></svg>PetFinder</a>
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -109,13 +106,23 @@
                     </form>
                 </div>
             </div>
-            <div class="col-lg-5 d-none d-lg-flex justify-content-center mt-4 mt-lg-0">
-                <svg width="280" height="280" viewbox="0 0 280 280" fill="none" style="opacity:.2">
-                    <ellipse cx="140" cy="200" rx="55" ry="65" fill="white" />
-                    <ellipse cx="75" cy="120" rx="30" ry="38" fill="white" transform="rotate(-15 75 120)" />
-                    <ellipse cx="205" cy="120" rx="30" ry="38" fill="white" transform="rotate(15 205 120)" />
-                    <ellipse cx="100" cy="70" rx="22" ry="30" fill="white" transform="rotate(-5 100 70)" />
-                    <ellipse cx="180" cy="70" rx="22" ry="30" fill="white" transform="rotate(5 180 70)" />
+            <div class="col-lg-5 d-none d-lg-flex justify-content-center align-items-center mt-4 mt-lg-0">
+                <svg width="320" height="280" viewBox="0 0 320 280" fill="none" style="opacity:.25" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <g id="hero-paw" fill="white">
+                            <!-- Almofada principal -->
+                            <ellipse cx="50" cy="70" rx="28" ry="32" />
+                            <!-- 4 dedos -->
+                            <ellipse cx="20" cy="36" rx="12" ry="16" transform="rotate(-20 20 36)" />
+                            <ellipse cx="38" cy="16" rx="10" ry="15" transform="rotate(-6 38 16)" />
+                            <ellipse cx="62" cy="16" rx="10" ry="15" transform="rotate(6 62 16)" />
+                            <ellipse cx="80" cy="36" rx="12" ry="16" transform="rotate(20 80 36)" />
+                        </g>
+                    </defs>
+                    <!-- Patinha 1 (superior esquerda) -->
+                    <use href="#hero-paw" transform="translate(25, 20) rotate(-14 50 50) scale(1.05)" />
+                    <!-- Patinha 2 (inferior direita) -->
+                    <use href="#hero-paw" transform="translate(155, 90) rotate(14 50 50) scale(1.3)" />
                 </svg>
             </div>
         </div>
@@ -347,7 +354,7 @@
     <div class="container">
         <div class="row g-4">
             <div class="col-lg-4">
-                <h6><i class="bi bi-search-heart me-2" style="color:var(--lost-color)"></i>PetFinder</h6>
+                <h6 class="d-flex align-items-center gap-2"><svg width="28" height="20" viewBox="0 0 190 140" fill="#0d6efd" xmlns="http://www.w3.org/2000/svg"><g transform="translate(5,0) rotate(-12,50,75)"><ellipse cx="50" cy="80" rx="20" ry="22"/><ellipse cx="21" cy="52" rx="9" ry="13" transform="rotate(-20 21 52)"/><ellipse cx="37" cy="41" rx="8" ry="12" transform="rotate(-5 37 41)"/><ellipse cx="63" cy="41" rx="8" ry="12" transform="rotate(5 63 41)"/><ellipse cx="79" cy="52" rx="9" ry="13" transform="rotate(20 79 52)"/></g><g transform="translate(95,18) rotate(12,50,75)"><ellipse cx="50" cy="80" rx="22" ry="24"/><ellipse cx="20" cy="50" rx="10" ry="14" transform="rotate(-20 20 50)"/><ellipse cx="37" cy="39" rx="9" ry="13" transform="rotate(-5 37 39)"/><ellipse cx="63" cy="39" rx="9" ry="13" transform="rotate(5 63 39)"/><ellipse cx="80" cy="50" rx="10" ry="14" transform="rotate(20 80 50)"/></g></svg>PetFinder</h6>
                 <p style="font-size:.88rem;">Plataforma comunitária de utilidade pública dedicada a reunir animais perdidos com suas famílias. Cada alerta pode mudar uma história.</p>
                 <div class="mt-3">
                     <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>

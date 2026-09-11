@@ -7,6 +7,11 @@
 
     <title>{{ $title ?? config('app.name', 'PetFinder') }}</title>
 
+    <!-- Favicon (2 patinhas) -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="alternate icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+
     <!-- Bootstrap 5 CDN (latest) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -23,9 +28,8 @@
     <meta name="theme-color" content="#0d6efd">
 
     <style>
-        :root { --primary-gradient: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%); }
         body { background-color: #f8f9fa; font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
-        .navbar-brand { font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .navbar-brand { font-weight: 800; color: #0d6efd; }
         .main-content { flex-grow: 1; padding: 2rem 0; }
         .animate-pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
@@ -35,7 +39,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
-            <a class="navbar-brand fs-3" href="{{ route('dashboard') }}">🐾 PetFinder</a>
+            <a class="navbar-brand fs-3" href="{{ route('dashboard') }}" style="display:flex;align-items:center;gap:.4rem;"><svg width="38" height="28" viewBox="0 0 190 140" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><g transform="translate(5,0) rotate(-12,50,75)"><ellipse cx="50" cy="80" rx="20" ry="22"/><ellipse cx="21" cy="52" rx="9" ry="13" transform="rotate(-20 21 52)"/><ellipse cx="37" cy="41" rx="8" ry="12" transform="rotate(-5 37 41)"/><ellipse cx="63" cy="41" rx="8" ry="12" transform="rotate(5 63 41)"/><ellipse cx="79" cy="52" rx="9" ry="13" transform="rotate(20 79 52)"/></g><g transform="translate(95,18) rotate(12,50,75)"><ellipse cx="50" cy="80" rx="22" ry="24"/><ellipse cx="20" cy="50" rx="10" ry="14" transform="rotate(-20 20 50)"/><ellipse cx="37" cy="39" rx="9" ry="13" transform="rotate(-5 37 39)"/><ellipse cx="63" cy="39" rx="9" ry="13" transform="rotate(5 63 39)"/><ellipse cx="80" cy="50" rx="10" ry="14" transform="rotate(20 80 50)"/></g></svg>PetFinder</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                 <span class="navbar-toggler-icon"></span>
             </button>

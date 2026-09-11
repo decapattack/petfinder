@@ -22,16 +22,16 @@
 
 .navbar-petfinder .navbar-brand {
     font-weight: 800;
-    font-size: 1.5rem;
-    color: var(--brand);
+    font-size: 1.75rem;
+    color: #0d6efd;
     display: flex;
     align-items: center;
-    gap: .5rem;
+    gap: .4rem;
+    text-decoration: none;
 }
 
-.navbar-petfinder .navbar-brand .paw-icon {
-    color: var(--lost-color);
-    font-size: 1.3rem;
+.navbar-petfinder .navbar-brand:hover {
+    color: #0b5ed7;
 }
 
 .navbar-petfinder .nav-link {
@@ -658,11 +658,7 @@
     
     /* Navbar mobile adjustments */
     .navbar-petfinder .navbar-brand {
-        font-size: 1.3rem;
-    }
-    
-    .navbar-petfinder .navbar-brand .paw-icon {
-        font-size: 1.1rem;
+        font-size: 1.4rem;
     }
     
     /* Touch targets maiores para mobile */
