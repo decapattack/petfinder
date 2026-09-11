@@ -3,21 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
 
 class AuthController extends Controller
 {
     /**
-     * Fix #3: Whitelist of allowed OAuth providers.
+     * Whitelist de provedores OAuth permitidos.
      */
     private const ALLOWED_PROVIDERS = ['google', 'twitter-oauth-2', 'microsoft'];
 
     public function redirectToProvider(string $provider)
     {
-        // Fix #3: Validate provider against whitelist before passing to Socialite
+        // Validar se o provedor está na whitelist
         if (!in_array($provider, self::ALLOWED_PROVIDERS)) {
             abort(404);
         }
@@ -25,44 +27,69 @@ class AuthController extends Controller
         return Socialite::driver($provider)->redirect();
     }
 
-    public function handleProviderCallback(string $provider)
+    public function handleProviderCallback(Request $request, string $provider)
     {
-        // Fix #3: Validate provider against whitelist
+        // Validar se o provedor está na whitelist
         if (!in_array($provider, self::ALLOWED_PROVIDERS)) {
             abort(404);
         }
 
+        // Tratar cancelamento ou erro devolvido pelo provedor OAuth
+        if ($request->has('error')) {
+            $errorDesc = $request->get('error_description', 'Acesso não concedido pelo provedor.');
+            return redirect()->route('login')->withErrors([
+                'email' => 'Autenticação cancelada: ' . $errorDesc,
+            ]);
+        }
+
         try {
             $socialUser = Socialite::driver($provider)->user();
-        } catch (\Exception $e) {
-            return redirect()->route('login')->withErrors(['email' => 'Erro ao autenticar com ' . $provider . '. Tente novamente.']);
+        } catch (InvalidStateException $e) {
+            // CSRF state mismatch no fluxo OAuth
+            return redirect()->route('login')->withErrors([
+                'email' => 'A sessão de autenticação expirou ou o token de estado é inválido. Tente novamente.',
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning("Falha na autenticação OAuth com {$provider}: " . $e->getMessage());
+            return redirect()->route('login')->withErrors([
+                'email' => 'Erro ao autenticar com ' . $provider . '. Tente novamente.',
+            ]);
         }
 
-        // Prevent OAuth users without email from registering
-        if (!$socialUser->getEmail()) {
-            return redirect()->route('login')->withErrors(['email' => 'Este provedor não forneceu um e-mail. Use outro método de login.']);
+        // Provedor precisa fornecer e-mail válido
+        $email = $socialUser->getEmail();
+        if (!$email) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Este provedor não forneceu um e-mail válido. Utilize outro método de login.',
+            ]);
         }
 
-        $user = User::where('email', $socialUser->getEmail())->first();
+        $user = User::where('email', $email)->first();
 
         if (!$user) {
             $user = User::create([
                 'name'        => $socialUser->getName() ?? $socialUser->getNickname() ?? 'Usuário',
-                'email'       => $socialUser->getEmail(),
+                'email'       => $email,
                 'provider'    => $provider,
                 'provider_id' => $socialUser->getId(),
                 'pontos'      => 0,
             ]);
 
-            // Fix #4: Fire Registered event so MustVerifyEmail sends verification,
-            // but also pre-verify social logins since the email was validated by the provider.
             $user->markEmailAsVerified();
             event(new Registered($user));
+        } else {
+            // Vincula o provedor caso o usuário tenha sido criado via formulário
+            if (empty($user->provider_id)) {
+                $user->update([
+                    'provider'    => $provider,
+                    'provider_id' => $socialUser->getId(),
+                ]);
+            }
         }
 
         Auth::login($user, true);
 
-        // If missing geolocation/phone, send to setup page (Profile, not Register which is guest-only)
+        // Se faltar geolocalização ou telefone, direciona para o perfil para completar
         if (!$user->latitude || !$user->telefone) {
             return redirect()->route('profile.edit')->with('info', 'Complete seus dados para ativar o Radar 1 KM.');
         }

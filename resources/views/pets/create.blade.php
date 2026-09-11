@@ -51,13 +51,31 @@
                                 @error('cor')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
+
+                        <!-- Upload de Imagens -->
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Mídias do Pet (Fotos e Vídeos)</label>
+                            <label class="form-label fw-bold">Fotos do Pet (Imagens)</label>
                             <input type="file" name="media[]" class="form-control @error('media') is-invalid @enderror @error('media.*') is-invalid @enderror"
-                                   required accept="image/*,video/*" multiple>
-                            <div class="form-text">Dica: Envie fotos claras e, se possível, um vídeo curto para ajudar na identificação rápida. Você pode selecionar múltiplos arquivos.</div>
+                                   accept="image/jpeg,image/png,image/webp,image/bmp,image/gif" multiple>
+                            <div class="form-text">
+                                Formatos aceitos: JPG, PNG, WEBP, BMP ou GIF. As fotos são automaticamente otimizadas e redimensionadas proporcionalmente (máx 1920x1080) em alta qualidade.
+                            </div>
                             @error('media')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                             @error('media.*')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                        </div>
+
+                        <!-- Link de Vídeo Externo (Embed) -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Vídeo do Pet (Opcional - YouTube, TikTok ou Instagram)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-play-circle-fill text-danger"></i></span>
+                                <input type="url" name="video_url" class="form-control @error('video_url') is-invalid @enderror"
+                                       value="{{ old('video_url') }}" placeholder="Ex: https://www.youtube.com/watch?v=... ou https://www.instagram.com/reel/...">
+                            </div>
+                            <div class="form-text">
+                                Cole o link de um vídeo do YouTube, TikTok ou Reels do Instagram para exibir na página do pet.
+                            </div>
+                            @error('video_url')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="mb-4">
@@ -78,4 +96,3 @@
         </div>
     </div>
 </x-app-layout>
-

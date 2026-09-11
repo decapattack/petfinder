@@ -11,11 +11,11 @@
             position: relative;
             border-radius: 12px;
             overflow: hidden;
-            height: 150px;
+            height: 160px;
             background-color: #f0f0f0;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .media-container img, .media-container video {
+        .media-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -47,15 +47,15 @@
     @endpush
 
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-md-11">
             <!-- Header -->
             <div class="d-flex align-items-center mb-4">
                 <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-arrow-left"></i>
+                    <i class="bi bi-arrow-left"></i>
                 </a>
                 <div>
                     <h2 class="mb-0 fw-bold">Editar Pet: {{ $pet->nome }}</h2>
-                    <p class="text-muted mb-0">Atualize os dados e gerencie as fotos/vídeos de identificação.</p>
+                    <p class="text-muted mb-0">Atualize os dados cadastrais, fotos e vídeos incorporados de identificação.</p>
                 </div>
             </div>
 
@@ -130,49 +130,68 @@
 
                 <!-- Coluna da Direita: Gerenciador de Mídias -->
                 <div class="col-lg-7">
-                    <div class="card shadow-sm border-0 h-100">
+                    <div class="card shadow-sm border-0 mb-4">
                         <div class="card-body p-4">
-                            <h4 class="fw-bold mb-3">Fotos e Vídeos</h4>
-                            <p class="text-muted small mb-4">Gerencie as imagens do pet. Você pode subir múltiplos arquivos de imagem ou vídeo de até 20MB cada.</p>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h4 class="fw-bold mb-1">Mídias do Pet</h4>
+                                    <p class="text-muted small mb-0">Fotos enviadas e vídeos externos incorporados.</p>
+                                </div>
+                                <button type="button" class="btn btn-outline-danger btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addVideoModal">
+                                    <i class="bi bi-link-45deg me-1"></i>+ Link de Vídeo
+                                </button>
+                            </div>
 
                             <div class="row g-3">
                                 <!-- Listagem das Mídias Atuais -->
-                                @foreach($pet->media as $mediaItem)
+                                @forelse($pet->media as $mediaItem)
                                     <div class="col-md-4 col-sm-6">
-                                        <div class="media-container">
+                                        <div class="media-container position-relative">
                                             <!-- Formulário para exclusão individual -->
                                             <form action="{{ route('pets.media.destroy', [$pet, $mediaItem]) }}" method="POST" onsubmit="return confirm('Deseja realmente remover esta mídia?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="delete-btn" title="Remover mídia">
-                                                    <i class="fa-solid fa-trash"></i>
+                                                    <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
 
                                             @if($mediaItem->type === 'video')
-                                                <video src="{{ asset('storage/' . $mediaItem->path) }}" muted preload="metadata" playsinline></video>
-                                                <!-- Overlay indicativo de vídeo -->
+                                                @php $embedData = $mediaItem->embed_data; @endphp
+                                                @if(!empty($embedData['thumbnail_url']))
+                                                    <img src="{{ $embedData['thumbnail_url'] }}" alt="Vídeo {{ $pet->nome }}">
+                                                @else
+                                                    <div class="d-flex flex-column align-items-center justify-content-center h-100 bg-dark text-white p-2 text-center">
+                                                        <i class="bi bi-camera-video-fill fs-2 text-danger mb-1"></i>
+                                                        <span class="small text-truncate w-100">{{ ucfirst($embedData['platform'] ?? 'Vídeo') }}</span>
+                                                    </div>
+                                                @endif
                                                 <div class="position-absolute bottom-0 start-0 m-2 bg-dark bg-opacity-75 text-white rounded px-2 py-1 small">
-                                                    <i class="fa-solid fa-video me-1"></i> Vídeo
+                                                    <i class="bi bi-play-circle me-1"></i> {{ ucfirst($embedData['platform'] ?? 'Vídeo') }}
                                                 </div>
                                             @else
-                                                <img src="{{ asset('storage/' . $mediaItem->path) }}" alt="Mídia do pet">
+                                                <img src="{{ asset('storage/' . $mediaItem->path) }}" alt="Foto do pet">
                                             @endif
                                         </div>
                                     </div>
-                                @endforeach
+                                @empty
+                                    <div class="col-12 py-3 text-center text-muted">
+                                        Nenhuma mídia cadastrada ainda.
+                                    </div>
+                                @endforelse
 
-                                <!-- Card de Adição de Mídias -->
+                                <!-- Card para Envio Rápido de Fotos -->
                                 <div class="col-md-4 col-sm-6">
                                     <form action="{{ route('pets.media.store', $pet) }}" method="POST" enctype="multipart/form-data" id="addMediaForm">
                                         @csrf
-                                        <label class="card justify-content-center align-items-center border-dashed cursor-pointer" 
-                                               style="border: 2px dashed #0d6efd; border-radius: 12px; height: 150px; transition: all 0.2s;">
-                                            <input type="file" name="media[]" class="d-none" multiple accept="image/*,video/*" 
+                                        <label class="card justify-content-center align-items-center border-dashed cursor-pointer w-100" 
+                                               style="border: 2px dashed #0d6efd; border-radius: 12px; height: 160px; transition: all 0.2s;">
+                                            <input type="file" name="media[]" class="d-none" multiple accept="image/jpeg,image/png,image/webp,image/bmp,image/gif" 
                                                    onchange="document.getElementById('addMediaForm').submit()">
                                             <div class="text-center text-primary">
-                                                <i class="fa-solid fa-plus fs-1 mb-2"></i>
-                                                <div class="small fw-bold">Adicionar Mídias</div>
+                                                <i class="bi bi-cloud-arrow-up fs-2 mb-1 d-block"></i>
+                                                <div class="small fw-bold">+ Adicionar Fotos</div>
+                                                <div class="text-muted" style="font-size: 0.75rem;">Otimização automática</div>
                                             </div>
                                         </label>
                                     </form>
@@ -181,6 +200,34 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Link de Vídeo -->
+    <div class="modal fade" id="addVideoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-play-circle-fill me-2"></i>Adicionar Link de Vídeo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('pets.media.store', $pet) }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <p class="text-muted small">
+                            Você pode incorporar vídeos de plataformas públicas como <strong>YouTube</strong> (vídeos e Shorts), <strong>Instagram</strong> (Reels) ou <strong>TikTok</strong>.
+                        </p>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Link do Vídeo</label>
+                            <input type="url" name="video_url" class="form-control" required placeholder="https://www.youtube.com/watch?v=...">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Vídeo</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

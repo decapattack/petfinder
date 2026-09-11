@@ -13,7 +13,19 @@ class PetTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_user_can_create_pet_with_multiple_media(): void
+    public function test_create_pet_screen_can_be_rendered(): void
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => now(),
+        ]);
+
+        $response = $this->actingAs($user)->get('/pets/create');
+
+        $response->assertStatus(200);
+        $response->assertSee('Cadastrar Novo Pet');
+    }
+
+    public function test_user_can_create_pet_with_multiple_media_and_video_url(): void
     {
         Storage::fake('public');
 
@@ -21,8 +33,8 @@ class PetTest extends TestCase
             'email_verified_at' => now(),
         ]);
 
-        $imageFile = UploadedFile::fake()->image('dog.jpg');
-        $videoFile = UploadedFile::fake()->create('dog_video.mp4', 1024, 'video/mp4');
+        $imageFile = UploadedFile::fake()->image('dog.png', 800, 600);
+        $videoUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 
         $response = $this
             ->actingAs($user)
@@ -33,8 +45,8 @@ class PetTest extends TestCase
                 'cor' => 'Branco',
                 'media' => [
                     $imageFile,
-                    $videoFile,
-                ]
+                ],
+                'video_url' => $videoUrl,
             ]);
 
         $response->assertSessionHasNoErrors();
@@ -49,16 +61,125 @@ class PetTest extends TestCase
         // Check if pet media items were saved
         $this->assertCount(2, $pet->media);
         
-        $firstMedia = $pet->media->first();
-        $this->assertSame('image', $firstMedia->type);
-        Storage::disk('public')->assertExists($firstMedia->path);
+        $imageMedia = $pet->media->where('type', 'image')->first();
+        $this->assertNotNull($imageMedia);
+        $this->assertStringEndsWith('.jpg', $imageMedia->path);
+        Storage::disk('public')->assertExists($imageMedia->path);
 
-        $secondMedia = $pet->media->last();
-        $this->assertSame('video', $secondMedia->type);
-        Storage::disk('public')->assertExists($secondMedia->path);
+        $videoMedia = $pet->media->where('type', 'video')->first();
+        $this->assertNotNull($videoMedia);
+        $this->assertSame($videoUrl, $videoMedia->path);
+        $this->assertTrue($videoMedia->is_embed);
+        $this->assertStringContainsString('youtube-nocookie.com/embed/dQw4w9WgXcQ', $videoMedia->embed_url);
 
         // Test cover photo attribute
-        $this->assertSame($firstMedia->path, $pet->cover_photo->path);
+        $this->assertSame($imageMedia->path, $pet->cover_photo->path);
+    }
+
+    public function test_user_cannot_upload_raw_video_files(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create([
+            'email_verified_at' => now(),
+        ]);
+
+        $videoFile = UploadedFile::fake()->create('dog_video.mp4', 1024, 'video/mp4');
+
+        $response = $this
+            ->actingAs($user)
+            ->post('/pets', [
+                'nome' => 'Bidu',
+                'especie' => 'Cachorro',
+                'raca' => 'Poodle',
+                'cor' => 'Branco',
+                'media' => [
+                    $videoFile,
+                ]
+            ]);
+
+        $response->assertSessionHasErrors(['media.0']);
+        $this->assertNull(Pet::first());
+    }
+
+    public function test_image_is_resized_proportionally_to_maximum_dimensions_and_stored_as_jpg(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create([
+            'email_verified_at' => now(),
+        ]);
+
+        // Criar imagem grande de 3000 x 2000 (aspect ratio 1.5)
+        $largeImage = UploadedFile::fake()->image('large.png', 3000, 2000);
+
+        $response = $this
+            ->actingAs($user)
+            ->post('/pets', [
+                'nome' => 'Max',
+                'especie' => 'Cachorro',
+                'raca' => 'Pastor Alemão',
+                'cor' => 'Capa Preta',
+                'media' => [$largeImage],
+            ]);
+
+        $response->assertSessionHasNoErrors();
+
+        $pet = Pet::first();
+        $media = $pet->media->first();
+
+        // O arquivo deve ter sido salvo como JPG
+        $this->assertStringEndsWith('.jpg', $media->path);
+        Storage::disk('public')->assertExists($media->path);
+
+        // Obter dimensões do arquivo processado
+        $storedContent = Storage::disk('public')->get($media->path);
+        $imageResource = imagecreatefromstring($storedContent);
+        $width = imagesx($imageResource);
+        $height = imagesy($imageResource);
+        imagedestroy($imageResource);
+
+        // Não pode ultrapassar 1920 de largura nem 1080 de altura
+        $this->assertLessThanOrEqual(1920, $width);
+        $this->assertLessThanOrEqual(1080, $height);
+
+        // No aspect ratio 3000x2000, o limite restritivo é a altura (1080):
+        // 2000 * (1080/2000) = 1080
+        // 3000 * (1080/2000) = 1620
+        $this->assertSame(1620, $width);
+        $this->assertSame(1080, $height);
+    }
+
+    public function test_small_image_is_not_enlarged_but_converted_to_jpg(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create([
+            'email_verified_at' => now(),
+        ]);
+
+        $smallImage = UploadedFile::fake()->image('small.png', 500, 400);
+
+        $this->actingAs($user)->post('/pets', [
+            'nome' => 'Nina',
+            'especie' => 'Gato',
+            'raca' => 'Siamês',
+            'cor' => 'Branco',
+            'media' => [$smallImage],
+        ]);
+
+        $pet = Pet::first();
+        $media = $pet->media->first();
+
+        $storedContent = Storage::disk('public')->get($media->path);
+        $imageResource = imagecreatefromstring($storedContent);
+        $width = imagesx($imageResource);
+        $height = imagesy($imageResource);
+        imagedestroy($imageResource);
+
+        // Mantém as dimensões originais sem ampliação
+        $this->assertSame(500, $width);
+        $this->assertSame(400, $height);
     }
 
     public function test_user_can_delete_pet_and_its_files_are_removed(): void
@@ -78,17 +199,14 @@ class PetTest extends TestCase
         ]);
 
         $imagePath = 'pets/test_image.jpg';
-        $videoPath = 'pets/test_video.mp4';
+        $videoUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 
         Storage::disk('public')->put($imagePath, 'dummy content');
-        Storage::disk('public')->put($videoPath, 'dummy content');
 
         $pet->media()->create(['path' => $imagePath, 'type' => 'image']);
-        $pet->media()->create(['path' => $videoPath, 'type' => 'video']);
+        $pet->media()->create(['path' => $videoUrl, 'type' => 'video']);
 
-        // Assert files exist initially
         Storage::disk('public')->assertExists($imagePath);
-        Storage::disk('public')->assertExists($videoPath);
 
         $response = $this
             ->actingAs($user)
@@ -100,9 +218,8 @@ class PetTest extends TestCase
         $this->assertNull(Pet::find($pet->id));
         $this->assertCount(0, \DB::table('pet_media')->where('pet_id', $pet->id)->get());
 
-        // Assert files are physically deleted from storage
+        // Assert image file is physically deleted from storage
         Storage::disk('public')->assertMissing($imagePath);
-        Storage::disk('public')->assertMissing($videoPath);
     }
 
     public function test_user_can_access_edit_page_of_their_pet(): void
@@ -187,6 +304,7 @@ class PetTest extends TestCase
         $pet->refresh();
 
         $this->assertCount(1, $pet->media);
+        $this->assertStringEndsWith('.jpg', $pet->media->first()->path);
         Storage::disk('public')->assertExists($pet->media->first()->path);
     }
 

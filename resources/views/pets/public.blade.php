@@ -8,7 +8,23 @@
                         @forelse($pet->media as $index => $item)
                             <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                                 @if($item->type === 'video')
-                                    <video src="{{ asset('storage/' . $item->path) }}" class="d-block w-100" style="height: 400px; object-fit: cover;" controls autoplay muted playsinline></video>
+                                    @php $embedUrl = $item->embed_url; @endphp
+                                    @if($embedUrl)
+                                        <div class="d-flex align-items-center justify-content-center bg-black" style="height: 400px;">
+                                            <iframe src="{{ $embedUrl }}" 
+                                                    class="w-100 h-100 border-0" 
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                    allowfullscreen>
+                                            </iframe>
+                                        </div>
+                                    @else
+                                        <div class="d-flex flex-column align-items-center justify-content-center bg-dark text-white p-4" style="height: 400px;">
+                                            <i class="bi bi-play-circle fs-1 mb-2 text-danger"></i>
+                                            <a href="{{ $item->path }}" target="_blank" class="btn btn-outline-light btn-sm">
+                                                <i class="bi bi-box-arrow-up-right me-1"></i> Abrir Vídeo
+                                            </a>
+                                        </div>
+                                    @endif
                                 @else
                                     <img src="{{ asset('storage/' . $item->path) }}" class="d-block w-100" style="height: 400px; object-fit: cover;" alt="{{ $pet->nome }}">
                                 @endif
@@ -102,4 +118,3 @@
         </div>
     </div>
 </x-app-layout>
-

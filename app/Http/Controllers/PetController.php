@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pet;
+use App\Models\PetMedia;
+use App\Services\ImageService;
+use App\Services\VideoEmbedService;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +15,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 class PetController extends Controller
 {
     use AuthorizesRequests;
+
     public function index()
     {
         $pets = Auth::user()->pets;
@@ -20,19 +24,28 @@ class PetController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Pet::class);
         return view('pets.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, ImageService $imageService, VideoEmbedService $videoEmbedService)
     {
+        $this->authorize('create', Pet::class);
+
         $request->validate([
-            'nome'               => 'required|string|max:255',
-            'especie'            => 'required|string|max:100',
-            'raca'               => 'required|string|max:100',
-            'cor'                => 'required|string|max:100',
-            'condicoes_especiais'=> 'nullable|string|max:500',
-            'media'              => 'required|array|min:1',
-            'media.*'            => 'file|mimes:jpeg,png,jpg,webp,mp4,mov,avi,webm|max:20480',
+            'nome'                => 'required|string|max:255',
+            'especie'             => 'required|string|max:100',
+            'raca'                => 'required|string|max:100',
+            'cor'                 => 'required|string|max:100',
+            'condicoes_especiais' => 'nullable|string|max:500',
+            'media'               => 'required_without:video_url|array|min:1',
+            'media.*'             => 'file|image|mimes:jpeg,png,jpg,webp,bmp,gif|max:20480',
+            'video_url'           => 'nullable|url|max:500',
+        ], [
+            'media.required_without' => 'Por favor, envie ao menos uma foto ou informe um link de vídeo.',
+            'media.*.mimes'          => 'Os arquivos de imagem devem ser nos formatos: JPG, PNG, WEBP, BMP ou GIF.',
+            'media.*.image'          => 'Apenas imagens são permitidas para upload direto.',
+            'video_url.url'          => 'Informe uma URL válida para o vídeo (YouTube, TikTok ou Instagram).',
         ]);
 
         $pet = Pet::create([
@@ -46,17 +59,22 @@ class PetController extends Controller
 
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
-                $path = $file->store('pets', 'public');
-                $mime = $file->getClientMimeType();
-                $extension = strtolower($file->getClientOriginalExtension() ?: pathinfo($path, PATHINFO_EXTENSION));
-                $isVideo = str_contains($mime, 'video') || in_array($extension, ['mp4', 'mov', 'avi', 'webm', 'ogg', 'quicktime']);
-                $type = $isVideo ? 'video' : 'image';
-
+                $path = $imageService->processAndStore($file, 'pets');
                 $pet->media()->create([
                     'path' => $path,
-                    'type' => $type,
+                    'type' => 'image',
                 ]);
             }
+        }
+
+        if ($request->filled('video_url')) {
+            $parsed = $videoEmbedService->parse($request->video_url);
+            $videoUrl = $parsed ? $parsed['original_url'] : $request->video_url;
+
+            $pet->media()->create([
+                'path' => $videoUrl,
+                'type' => 'video',
+            ]);
         }
 
         return redirect()->route('dashboard')->with('success', 'Pet cadastrado com sucesso!');
@@ -64,18 +82,18 @@ class PetController extends Controller
 
     public function showPublic($uuid)
     {
-        $pet = Pet::where('uuid', $uuid)->with('user')->firstOrFail();
+        $pet = Pet::where('uuid', $uuid)->with('user', 'media')->firstOrFail();
         return view('pets.public', compact('pet'));
     }
 
     public function destroy(Pet $pet)
     {
-        if ($pet->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('delete', $pet);
 
         foreach ($pet->media as $mediaItem) {
-            Storage::disk('public')->delete($mediaItem->path);
+            if ($mediaItem->type === 'image' && !filter_var($mediaItem->path, FILTER_VALIDATE_URL)) {
+                Storage::disk('public')->delete($mediaItem->path);
+            }
         }
 
         $pet->delete();
@@ -90,7 +108,6 @@ class PetController extends Controller
     {
         $this->authorize('update', $pet);
 
-        // Eager load das relações
         $pet->load([
             'healthRecords' => fn($q) => $q->latest('record_date'),
             'schedules' => fn($q) => $q->upcoming(),
@@ -124,9 +141,7 @@ class PetController extends Controller
      */
     public function edit(Pet $pet)
     {
-        if ($pet->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('view', $pet);
 
         $pet->load('media');
 
@@ -138,9 +153,7 @@ class PetController extends Controller
      */
     public function update(Request $request, Pet $pet)
     {
-        if ($pet->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $pet);
 
         $validated = $request->validate([
             'nome'               => 'required|string|max:255',
@@ -160,30 +173,46 @@ class PetController extends Controller
     /**
      * STORE MEDIA: Adiciona novas mídias ao pet pela tela de edição
      */
-    public function storeMedia(Request $request, Pet $pet)
+    public function storeMedia(Request $request, Pet $pet, ImageService $imageService, VideoEmbedService $videoEmbedService)
     {
-        if ($pet->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('manageMedia', $pet);
 
         $request->validate([
-            'media'   => 'required|array|min:1',
-            'media.*' => 'file|mimes:jpeg,png,jpg,webp,mp4,mov,avi,webm|max:20480',
+            'media'     => 'nullable|array',
+            'media.*'   => 'file|image|mimes:jpeg,png,jpg,webp,bmp,gif|max:20480',
+            'video_url' => 'nullable|url|max:500',
+        ], [
+            'media.*.mimes' => 'Os arquivos de imagem devem ser nos formatos: JPG, PNG, WEBP, BMP ou GIF.',
+            'media.*.image' => 'Apenas imagens são permitidas para upload direto.',
+            'video_url.url' => 'Informe uma URL válida para o vídeo (YouTube, TikTok ou Instagram).',
         ]);
+
+        $addedCount = 0;
 
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
-                $path = $file->store('pets', 'public');
-                $mime = $file->getClientMimeType();
-                $extension = strtolower($file->getClientOriginalExtension() ?: pathinfo($path, PATHINFO_EXTENSION));
-                $isVideo = str_contains($mime, 'video') || in_array($extension, ['mp4', 'mov', 'avi', 'webm', 'ogg', 'quicktime']);
-                $type = $isVideo ? 'video' : 'image';
-
+                $path = $imageService->processAndStore($file, 'pets');
                 $pet->media()->create([
                     'path' => $path,
-                    'type' => $type,
+                    'type' => 'image',
                 ]);
+                $addedCount++;
             }
+        }
+
+        if ($request->filled('video_url')) {
+            $parsed = $videoEmbedService->parse($request->video_url);
+            $videoUrl = $parsed ? $parsed['original_url'] : $request->video_url;
+
+            $pet->media()->create([
+                'path' => $videoUrl,
+                'type' => 'video',
+            ]);
+            $addedCount++;
+        }
+
+        if ($addedCount === 0) {
+            return back()->with('error', 'Selecione pelo menos uma imagem ou informe um link de vídeo.');
         }
 
         return back()->with('success', 'Mídias adicionadas com sucesso!');
@@ -192,13 +221,13 @@ class PetController extends Controller
     /**
      * DESTROY MEDIA: Remove uma mídia específica do pet
      */
-    public function destroyMedia(Pet $pet, \App\Models\PetMedia $media)
+    public function destroyMedia(Pet $pet, PetMedia $media)
     {
-        if ($pet->user_id !== Auth::id() || $media->pet_id !== $pet->id) {
-            abort(403);
-        }
+        $this->authorize('destroyMedia', [$pet, $media]);
 
-        Storage::disk('public')->delete($media->path);
+        if ($media->type === 'image' && !filter_var($media->path, FILTER_VALIDATE_URL)) {
+            Storage::disk('public')->delete($media->path);
+        }
         $media->delete();
 
         return back()->with('success', 'Mídia removida com sucesso!');

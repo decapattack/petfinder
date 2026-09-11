@@ -18,7 +18,15 @@
                 <div class="card shadow-sm h-100 {{ $pet->status == 'desaparecido' ? 'border-danger border-3 shadow' : '' }}">
                     @if($pet->cover_photo)
                         @if($pet->cover_photo->type === 'video')
-                            <video src="{{ asset('storage/' . $pet->cover_photo->path) }}" class="card-img-top" style="height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;" autoplay muted loop playsinline></video>
+                            @php $embedData = $pet->cover_photo->embed_data; @endphp
+                            @if(!empty($embedData['thumbnail_url']))
+                                <img src="{{ $embedData['thumbnail_url'] }}" class="card-img-top" alt="{{ $pet->nome }}" style="height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                            @else
+                                <div class="card-img-top d-flex flex-column align-items-center justify-content-center bg-dark text-white" style="height: 200px; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                                    <i class="bi bi-play-circle fs-1 text-danger mb-1"></i>
+                                    <span class="small">{{ ucfirst($embedData['platform'] ?? 'Vídeo') }}</span>
+                                </div>
+                            @endif
                         @else
                             <img src="{{ asset('storage/' . $pet->cover_photo->path) }}" class="card-img-top" alt="{{ $pet->nome }}" style="height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
                         @endif

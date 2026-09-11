@@ -123,4 +123,17 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Health Check Token
+    |--------------------------------------------------------------------------
+    |
+    | Token secreto para proteger o endpoint de monitoramento /up.
+    | Configure APP_HEALTH_TOKEN no .env para uso em produção.
+    | Em ambiente local e de testes, o token não é exigido.
+    |
+    */
+
+    'health_token' => env('APP_HEALTH_TOKEN'),
+
 ];

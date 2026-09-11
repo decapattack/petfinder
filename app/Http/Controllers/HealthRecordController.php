@@ -31,7 +31,7 @@ class HealthRecordController extends Controller
     public function store(Request $request, Pet $pet)
     {
         // Policy: apenas dono do pet pode adicionar
-        $this->authorize('update', $pet);
+        $this->authorize('create', [HealthRecord::class, $pet]);
 
         $validated = $request->validate([
             'title' => 'required|string|max:150',
@@ -76,13 +76,8 @@ class HealthRecordController extends Controller
      */
     public function updatePrivacy(Request $request, Pet $pet, HealthRecord $record)
     {
-        // Verificar se o record pertence ao pet
-        if ($record->pet_id !== $pet->id) {
-            abort(404);
-        }
-
-        // Policy: apenas dono pode alterar privacidade
-        $this->authorize('update', $pet);
+        // Policy: validação estrita de ownership e vínculo do registro ao pet
+        $this->authorize('update', [$record, $pet]);
 
         $validated = $request->validate([
             'is_public' => 'required|boolean',
@@ -110,27 +105,14 @@ class HealthRecordController extends Controller
      * SHOW FILE: Retorna o arquivo para visualização/download
      * GET /pets/{pet}/records/{record}/view
      * 
-     * Security: Rota protegida - permite apenas se:
+     * Security: Rota protegida - gerenciada por HealthRecordPolicy:
      *   1. Usuário é o dono do pet, OU
-     *   2. Usuário está autenticado E is_public = true
+     *   2. Ficha está marcada como is_public
      */
     public function showFile(Pet $pet, HealthRecord $record): BinaryFileResponse
     {
-        // Verificar se o record pertence ao pet
-        if ($record->pet_id !== $pet->id) {
-            abort(404);
-        }
-
-        // Verificar permissão de acesso
-        $isOwner = Auth::check() && Auth::id() === $pet->user_id;
-        $isPublic = $record->is_public;
-        $isAuthenticated = Auth::check();
-
-        // Permitir se: (dono) OU (autenticado E público)
-        // Nota: Comunidade pode ver públicos, mas precisa estar logada (evita scraping)
-        if (!$isOwner && !($isAuthenticated && $isPublic)) {
-            abort(403, 'Acesso negado. Esta ficha é privada.');
-        }
+        // Policy: valida se pertence ao pet e se o usuário tem permissão de visualização
+        $this->authorize('view', [$record, $pet]);
 
         // Verificar se arquivo existe
         if (!Storage::disk('local')->exists($record->file_path)) {
@@ -159,11 +141,8 @@ class HealthRecordController extends Controller
      */
     public function destroy(Pet $pet, HealthRecord $record)
     {
-        if ($record->pet_id !== $pet->id) {
-            abort(404);
-        }
-
-        $this->authorize('update', $pet);
+        // Policy: apenas o dono pode deletar
+        $this->authorize('delete', [$record, $pet]);
 
         // Deletar arquivo físico
         if (Storage::disk('local')->exists($record->file_path)) {

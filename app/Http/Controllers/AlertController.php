@@ -6,6 +6,7 @@ use App\Models\Alert;
 use App\Models\Pet;
 use App\Models\User;
 use App\Notifications\PetLostNotification;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\RateLimiter;
 
 class AlertController extends Controller
 {
+    use AuthorizesRequests;
+
     public function store(Request $request)
     {
         $request->validate([
@@ -21,9 +24,8 @@ class AlertController extends Controller
 
         $pet = Pet::findOrFail($request->pet_id);
 
-        if ($pet->user_id !== Auth::id()) {
-            abort(403);
-        }
+        // Policy: apenas o dono pode criar alerta para o pet
+        $this->authorize('create', [Alert::class, $pet]);
 
         // Prevent duplicate active alerts for the same pet
         if ($pet->status === 'desaparecido') {
@@ -55,13 +57,10 @@ class AlertController extends Controller
 
     public function resolve(Request $request, Alert $alert)
     {
-        $alert->load('pet');
-        $pet = $alert->pet;
+        // Policy: apenas o dono do pet pode encerrar o alerta
+        $this->authorize('resolve', $alert);
 
-        // Ensure the alert belongs to a pet owned by the authenticated user
-        if (!$pet || $pet->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $pet = $alert->pet;
 
         // Fix #8: Prevent resolving an already-resolved alert
         if ($alert->status === 'resolvido') {

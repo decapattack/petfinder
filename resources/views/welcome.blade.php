@@ -4,6 +4,15 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
+    <style>
+        .hover-translate-y {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-translate-y:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -244,6 +253,89 @@
                     </div>
                     <h5 class="mt-2">O Reencontro Acontece</h5>
                     <p>As informações chegam até você e seu amigo volta para casa em segurança.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ GESTÃO DE SAÚDE E RECURSOS ============ -->
+<section class="py-5 bg-white border-top border-bottom" id="recursos-saude">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill mb-2">Tudo em um só lugar</span>
+            <h2 class="section-title">Muito mais que buscas: Gestão de Saúde Completa</h2>
+            <p class="text-muted mt-2">A praticidade de gerenciar a segurança e a saúde do seu pet no mesmo aplicativo.</p>
+        </div>
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-6">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="d-flex bg-light p-4 rounded-4 shadow-sm border-start border-primary border-4 hover-translate-y">
+                            <div class="me-4 text-primary fs-1">
+                                <i class="fa-solid fa-syringe"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-2">Controle de Vacinas & Lembretes</h5>
+                                <p class="text-muted mb-0">Agende vacinas e remédios de forma simples e intuitiva. Tenha lembretes ativos para nunca perder o prazo da dose do seu melhor amigo.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex bg-light p-4 rounded-4 shadow-sm border-start border-success border-4 hover-translate-y">
+                            <div class="me-4 text-success fs-1">
+                                <i class="fa-solid fa-notes-medical"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-2">Prontuário Clínico & Exames</h5>
+                                <p class="text-muted mb-0">Centralize receitas, laudos e históricos médicos do pet. Suba PDFs ou imagens de exames e acesse tudo na nuvem com um clique, de onde estiver.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex bg-light p-4 rounded-4 shadow-sm border-start border-info border-4 hover-translate-y">
+                            <div class="me-4 text-info fs-1">
+                                <i class="fa-solid fa-qrcode"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-2">Identificação Inteligente Integrada</h5>
+                                <p class="text-muted mb-0">Gere um QR Code exclusivo para a coleira do pet. Se ele se perder, qualquer um que escanear poderá ver os dados de contato e ficha de saúde pública.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block text-center position-relative">
+                <div class="bg-primary bg-opacity-10 rounded-circle position-absolute start-50 top-50 translate-middle" style="width: 400px; height: 400px; z-index: 0;"></div>
+                <div class="card border-0 shadow-lg mx-auto rounded-4 overflow-hidden position-relative" style="max-width: 380px; z-index: 1;">
+                    <div class="bg-primary text-white p-4 text-start" style="background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);">
+                        <h4 class="fw-bold mb-0">🐾 Painel do Pet</h4>
+                        <small class="text-white-50">Histórico unificado de saúde e alertas</small>
+                    </div>
+                    <div class="p-4 text-start bg-white">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-success">Seguro</span>
+                            <span class="text-muted small">QR Code Ativo</span>
+                        </div>
+                        <div class="mb-3 pb-3 border-bottom">
+                            <strong class="d-block text-dark small mb-1">PRÓXIMO LEMBRETE:</strong>
+                            <div class="d-flex align-items-center text-danger small">
+                                <i class="fa-solid fa-clock me-2"></i>
+                                <span>Vacina Antirrábica - 10/10/2026</span>
+                            </div>
+                        </div>
+                        <div>
+                            <strong class="d-block text-dark small mb-2">FICHAS CLÍNICAS RECENTES:</strong>
+                            <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded mb-2 text-dark small">
+                                <span><i class="fa-solid fa-file-pdf me-2 text-danger"></i>Hemograma.pdf</span>
+                                <span class="badge bg-secondary">Exame</span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded text-dark small">
+                                <span><i class="fa-solid fa-file-image me-2 text-primary"></i>Vacina_V10.jpg</span>
+                                <span class="badge bg-primary">Vacina</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
