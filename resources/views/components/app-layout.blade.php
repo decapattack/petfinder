@@ -39,17 +39,17 @@
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     @guest
-                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
-                        <li class="nav-item ms-lg-2"><a class="btn btn-primary btn-sm" href="{{ route('register') }}">Cadastrar</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Entrar</a></li>
+                        <li class="nav-item ms-lg-2"><a class="btn btn-primary btn-sm rounded-pill px-3 mt-2 mt-lg-0" href="{{ route('register') }}">Cadastrar</a></li>
                     @else
                         <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Meus Pets</a></li>
 
                         {{-- Notification Bell --}}
                         <li class="nav-item dropdown px-1">
                             <a class="nav-link dropdown-toggle position-relative" href="#" data-bs-toggle="dropdown">
-                                🔔
+                                🔔 Notificações
                                 @if(Auth::user()->unreadNotifications->count() > 0)
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:.6rem;">
+                                    <span class="badge rounded-pill bg-danger" style="font-size:.6rem;">
                                         {{ Auth::user()->unreadNotifications->count() }}
                                     </span>
                                 @endif
@@ -69,7 +69,7 @@
                             </ul>
                         </li>
 
-                        <li class="nav-item ms-lg-2">
+                        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">Sair</button>

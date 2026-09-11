@@ -39,7 +39,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
-            <a class="navbar-brand fs-3" href="{{ route('dashboard') }}" style="display:flex;align-items:center;gap:.4rem;"><svg width="38" height="28" viewBox="0 0 190 140" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><g transform="translate(5,0) rotate(-12,50,75)"><ellipse cx="50" cy="80" rx="20" ry="22"/><ellipse cx="21" cy="52" rx="9" ry="13" transform="rotate(-20 21 52)"/><ellipse cx="37" cy="41" rx="8" ry="12" transform="rotate(-5 37 41)"/><ellipse cx="63" cy="41" rx="8" ry="12" transform="rotate(5 63 41)"/><ellipse cx="79" cy="52" rx="9" ry="13" transform="rotate(20 79 52)"/></g><g transform="translate(95,18) rotate(12,50,75)"><ellipse cx="50" cy="80" rx="22" ry="24"/><ellipse cx="20" cy="50" rx="10" ry="14" transform="rotate(-20 20 50)"/><ellipse cx="37" cy="39" rx="9" ry="13" transform="rotate(-5 37 39)"/><ellipse cx="63" cy="39" rx="9" ry="13" transform="rotate(5 63 39)"/><ellipse cx="80" cy="50" rx="10" ry="14" transform="rotate(20 80 50)"/></g></svg>PetFinder</a>
+            <a class="navbar-brand fs-3" href="{{ route('dashboard') }}" style="display:flex;align-items:center;gap:.4rem;"><svg width="38" height="28" viewBox="0 0 190 140" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><g transform="translate(5,0) rotate(-12,50,75)"><ellipse cx="50" cy="80" rx="20" ry="22"/><ellipse cx="21" cy="52" rx="9" ry="13" transform="rotate(-20 21 52)"/><ellipse cx="37" cy="41" rx="8" ry="12" transform="rotate(-5 37 41)"/><ellipse cx="63" cy="41" rx="8" ry="12" transform="rotate(-5 63 41)"/><ellipse cx="79" cy="52" rx="9" ry="13" transform="rotate(20 79 52)"/></g><g transform="translate(95,18) rotate(12,50,75)"><ellipse cx="50" cy="80" rx="22" ry="24"/><ellipse cx="20" cy="50" rx="10" ry="14" transform="rotate(-20 20 50)"/><ellipse cx="37" cy="39" rx="9" ry="13" transform="rotate(-5 37 39)"/><ellipse cx="63" cy="39" rx="9" ry="13" transform="rotate(5 63 39)"/><ellipse cx="80" cy="50" rx="10" ry="14" transform="rotate(20 80 50)"/></g></svg>PetFinder</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -47,8 +47,8 @@
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     @guest
-                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
-                        <li class="nav-item ms-lg-2"><a class="btn btn-primary btn-sm" href="{{ route('register') }}">Cadastrar</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Entrar</a></li>
+                        <li class="nav-item ms-lg-2"><a class="btn btn-primary btn-sm rounded-pill px-3 mt-2 mt-lg-0" href="{{ route('register') }}">Cadastrar</a></li>
                     @else
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('dashboard') ? 'active fw-bold' : '' }}" href="{{ route('dashboard') }}">Meus Pets</a>
@@ -60,9 +60,9 @@
                         {{-- Notificações --}}
                         <li class="nav-item dropdown px-1">
                             <a class="nav-link dropdown-toggle position-relative" href="#" data-bs-toggle="dropdown">
-                                🔔
+                                🔔 Notificações
                                 @if(Auth::user()->unreadNotifications->count() > 0)
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:.6rem;">
+                                    <span class="badge rounded-pill bg-danger" style="font-size:.6rem;">
                                         {{ Auth::user()->unreadNotifications->count() }}
                                     </span>
                                 @endif
@@ -82,7 +82,7 @@
                             </ul>
                         </li>
 
-                        <li class="nav-item ms-lg-2">
+                        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">Sair</button>

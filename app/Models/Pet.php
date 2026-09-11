@@ -12,14 +12,13 @@ class Pet extends Model
 
     protected $fillable = [
         'user_id',
+        'veterinarian_id',
         'nome',
         'especie',
         'raca',
         'cor',
         'condicoes_especiais',
         'status',
-        'vet_name',
-        'vet_phone',
         'is_public',
     ];
 
@@ -39,6 +38,11 @@ class Pet extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function veterinarian()
+    {
+        return $this->belongsTo(Veterinarian::class);
     }
 
     public function alerts()

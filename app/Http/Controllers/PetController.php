@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pet;
 use App\Models\PetMedia;
+use App\Models\Veterinarian;
 use App\Services\ImageService;
 use App\Services\VideoEmbedService;
 use Illuminate\Http\Request;
@@ -123,11 +124,14 @@ class PetController extends Controller
         $this->authorize('update', $pet);
 
         $pet->load([
+            'veterinarian',
             'healthRecords' => fn($q) => $q->latest('record_date'),
             'schedules' => fn($q) => $q->upcoming(),
         ]);
 
-        return view('pets.health', compact('pet'));
+        $veterinarians = Veterinarian::orderBy('nome')->get();
+
+        return view('pets.health', compact('pet', 'veterinarians'));
     }
 
     /**
@@ -138,12 +142,30 @@ class PetController extends Controller
     {
         $this->authorize('update', $pet);
 
-        $validated = $request->validate([
-            'vet_name' => 'nullable|string|max:100',
-            'vet_phone' => 'nullable|string|max:20',
-        ]);
+        if ($request->has('remove_vet') && $request->boolean('remove_vet')) {
+            $pet->update(['veterinarian_id' => null]);
+        } elseif ($request->filled('veterinarian_id')) {
+            $validated = $request->validate([
+                'veterinarian_id' => 'required|exists:veterinarians,id',
+            ]);
+            $pet->update(['veterinarian_id' => $validated['veterinarian_id']]);
+        } else {
+            $validated = $request->validate([
+                'nome' => 'required|string|max:150',
+                'crv' => 'nullable|string|max:50',
+                'telefone' => 'required|string|max:30',
+                'email' => 'nullable|email|max:150',
+                'cidade' => 'nullable|string|max:100',
+                'estado' => 'nullable|string|max:2',
+            ]);
 
-        $pet->update($validated);
+            if ($pet->veterinarian_id && !$request->boolean('create_new')) {
+                $pet->veterinarian->update($validated);
+            } else {
+                $vet = Veterinarian::create($validated);
+                $pet->update(['veterinarian_id' => $vet->id]);
+            }
+        }
 
         return redirect()
             ->route('pets.health', $pet)

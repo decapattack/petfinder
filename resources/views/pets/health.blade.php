@@ -44,23 +44,80 @@
             <!-- Card: Veterinário -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body p-4">
-                    <h5 class="fw-bold mb-3 d-flex align-items-center">
-                        <i class="bi bi-heart-pulse me-2 text-danger"></i>
-                        Veterinário de Confiança
-                    </h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold m-0 d-flex align-items-center">
+                            <i class="bi bi-heart-pulse me-2 text-danger"></i>
+                            Veterinário de Confiança
+                        </h5>
+                        @if($pet->veterinarian)
+                            <form action="{{ route('pets.vet.update', $pet) }}" method="POST" class="d-inline" onsubmit="return confirm('Deseja desvincular este veterinário do pet?')">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="remove_vet" value="1">
+                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill">
+                                    <i class="bi bi-x-circle me-1"></i> Desvincular Vet
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+
+                    @if(isset($veterinarians) && $veterinarians->count() > 0)
+                        <form action="{{ route('pets.vet.update', $pet) }}" method="POST" class="row g-3 mb-4 pb-3 border-bottom">
+                            @csrf
+                            @method('PATCH')
+                            <div class="col-md-8">
+                                <label class="form-label small fw-bold">Selecionar Veterinário Cadastrado</label>
+                                <select name="veterinarian_id" class="form-select">
+                                    <option value="">-- Escolha um veterinário --</option>
+                                    @foreach($veterinarians as $v)
+                                        <option value="{{ $v->id }}" {{ old('veterinarian_id', $pet->veterinarian_id) == $v->id ? 'selected' : '' }}>
+                                            {{ $v->nome }} ({{ $v->telefone }}) {{ $v->crv ? '- CRV: '.$v->crv : '' }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-secondary w-100 rounded-pill">Selecionar Existente</button>
+                            </div>
+                        </form>
+                    @endif
+
                     <form action="{{ route('pets.vet.update', $pet) }}" method="POST" class="row g-3">
                         @csrf
                         @method('PATCH')
-                        <div class="col-md-5">
-                            <label class="form-label small fw-bold">Nome do Vet / Clínica</label>
-                            <input type="text" name="vet_name" class="form-control" value="{{ old('vet_name', $pet->vet_name) }}" placeholder="Ex: Dr. Carlos">
+                        <div class="col-12">
+                            <h6 class="fw-bold text-muted mb-2">
+                                {{ $pet->veterinarian ? 'Editar Dados do Veterinário' : 'Cadastrar Novo Veterinário' }}
+                            </h6>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label small fw-bold">Telefone</label>
-                            <input type="tel" name="vet_phone" class="form-control" value="{{ old('vet_phone', $pet->vet_phone) }}" placeholder="(00) 00000-0000">
+                            <label class="form-label small fw-bold">Nome do Veterinário / Clínica <span class="text-danger">*</span></label>
+                            <input type="text" name="nome" class="form-control" value="{{ old('nome', $pet->veterinarian->nome ?? '') }}" placeholder="Ex: Dr. Carlos Silva" required>
                         </div>
-                        <div class="col-md-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100 rounded-pill">Atualizar Contato</button>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Telefone <span class="text-danger">*</span></label>
+                            <input type="tel" name="telefone" class="form-control" value="{{ old('telefone', $pet->veterinarian->telefone ?? '') }}" placeholder="(00) 00000-0000" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">CRV (Nº de Registro)</label>
+                            <input type="text" name="crv" class="form-control" value="{{ old('crv', $pet->veterinarian->crv ?? '') }}" placeholder="Ex: CRV-SP 12345">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">E-mail</label>
+                            <input type="email" name="email" class="form-control" value="{{ old('email', $pet->veterinarian->email ?? '') }}" placeholder="vet@clinica.com">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Cidade</label>
+                            <input type="text" name="cidade" class="form-control" value="{{ old('cidade', $pet->veterinarian->cidade ?? '') }}" placeholder="São Paulo">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Estado (UF)</label>
+                            <input type="text" name="estado" class="form-control" value="{{ old('estado', $pet->veterinarian->estado ?? '') }}" placeholder="SP" maxlength="2">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100 rounded-pill">
+                                {{ $pet->veterinarian ? 'Salvar' : 'Cadastrar' }}
+                            </button>
                         </div>
                     </form>
                 </div>
