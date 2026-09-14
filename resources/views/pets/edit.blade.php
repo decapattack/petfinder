@@ -217,7 +217,7 @@
                                                      {{ ucfirst($embedData['platform'] ?? 'Vídeo') }}
                                                 </div>
                                             @else
-                                                <img src="{{ asset('storage/' . $mediaItem->path) }}" alt="Foto do pet">
+                                                <img src="{{ $mediaItem->url }}" alt="Foto do pet">
                                             @endif
                                         </div>
                                     </div>
@@ -238,7 +238,6 @@
                                             <div class="text-center text-primary">
                                                 
                                                 <div class="small fw-bold">+ Adicionar Fotos</div>
-                                                <div class="text-muted" style="font-size: 0.75rem;">Otimização automática</div>
                                             </div>
                                         </label>
                                     </form>

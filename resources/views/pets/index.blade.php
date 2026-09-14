@@ -28,7 +28,7 @@
                                 </div>
                             @endif
                         @else
-                            <img src="{{ asset('storage/' . $pet->cover_photo->path) }}" class="card-img-top" alt="{{ $pet->nome }}" style="height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                            <img src="{{ $pet->cover_photo->url }}" class="card-img-top" alt="{{ $pet->nome }}" style="height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
                         @endif
                     @else
                         <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px; border-top-left-radius: 15px; border-top-right-radius: 15px;">

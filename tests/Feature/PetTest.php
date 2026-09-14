@@ -27,7 +27,7 @@ class PetTest extends TestCase
 
     public function test_user_can_create_pet_with_multiple_media_and_video_url(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
 
         $user = User::factory()->create([
             'email_verified_at' => now(),
@@ -64,7 +64,7 @@ class PetTest extends TestCase
         $imageMedia = $pet->media->where('type', 'image')->first();
         $this->assertNotNull($imageMedia);
         $this->assertStringEndsWith('.jpg', $imageMedia->path);
-        Storage::disk('public')->assertExists($imageMedia->path);
+        Storage::disk('local')->assertExists($imageMedia->path);
 
         $videoMedia = $pet->media->where('type', 'video')->first();
         $this->assertNotNull($videoMedia);
@@ -78,7 +78,7 @@ class PetTest extends TestCase
 
     public function test_user_cannot_upload_raw_video_files(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
 
         $user = User::factory()->create([
             'email_verified_at' => now(),
@@ -104,7 +104,7 @@ class PetTest extends TestCase
 
     public function test_image_is_resized_proportionally_to_maximum_dimensions_and_stored_as_jpg(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
 
         $user = User::factory()->create([
             'email_verified_at' => now(),
@@ -130,10 +130,10 @@ class PetTest extends TestCase
 
         // O arquivo deve ter sido salvo como JPG
         $this->assertStringEndsWith('.jpg', $media->path);
-        Storage::disk('public')->assertExists($media->path);
+        Storage::disk('local')->assertExists($media->path);
 
         // Obter dimensões do arquivo processado
-        $storedContent = Storage::disk('public')->get($media->path);
+        $storedContent = Storage::disk('local')->get($media->path);
         $imageResource = imagecreatefromstring($storedContent);
         $width = imagesx($imageResource);
         $height = imagesy($imageResource);
@@ -152,7 +152,7 @@ class PetTest extends TestCase
 
     public function test_small_image_is_not_enlarged_but_converted_to_jpg(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
 
         $user = User::factory()->create([
             'email_verified_at' => now(),
@@ -171,7 +171,7 @@ class PetTest extends TestCase
         $pet = Pet::first();
         $media = $pet->media->first();
 
-        $storedContent = Storage::disk('public')->get($media->path);
+        $storedContent = Storage::disk('local')->get($media->path);
         $imageResource = imagecreatefromstring($storedContent);
         $width = imagesx($imageResource);
         $height = imagesy($imageResource);
@@ -184,7 +184,7 @@ class PetTest extends TestCase
 
     public function test_user_can_delete_pet_and_its_files_are_removed(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
 
         $user = User::factory()->create([
             'email_verified_at' => now(),
@@ -201,12 +201,12 @@ class PetTest extends TestCase
         $imagePath = 'pets/test_image.jpg';
         $videoUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 
-        Storage::disk('public')->put($imagePath, 'dummy content');
+        Storage::disk('local')->put($imagePath, 'dummy content');
 
         $pet->media()->create(['path' => $imagePath, 'type' => 'image']);
         $pet->media()->create(['path' => $videoUrl, 'type' => 'video']);
 
-        Storage::disk('public')->assertExists($imagePath);
+        Storage::disk('local')->assertExists($imagePath);
 
         $response = $this
             ->actingAs($user)
@@ -219,7 +219,7 @@ class PetTest extends TestCase
         $this->assertCount(0, \DB::table('pet_media')->where('pet_id', $pet->id)->get());
 
         // Assert image file is physically deleted from storage
-        Storage::disk('public')->assertMissing($imagePath);
+        Storage::disk('local')->assertMissing($imagePath);
     }
 
     public function test_user_can_access_edit_page_of_their_pet(): void
@@ -284,7 +284,7 @@ class PetTest extends TestCase
 
     public function test_user_can_add_media_to_existing_pet(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         $user = User::factory()->create(['email_verified_at' => now()]);
         $pet = Pet::create([
             'user_id' => $user->id,
@@ -305,12 +305,12 @@ class PetTest extends TestCase
 
         $this->assertCount(1, $pet->media);
         $this->assertStringEndsWith('.jpg', $pet->media->first()->path);
-        Storage::disk('public')->assertExists($pet->media->first()->path);
+        Storage::disk('local')->assertExists($pet->media->first()->path);
     }
 
     public function test_user_can_delete_specific_media(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         $user = User::factory()->create(['email_verified_at' => now()]);
         $pet = Pet::create([
             'user_id' => $user->id,
@@ -321,16 +321,16 @@ class PetTest extends TestCase
         ]);
 
         $imagePath = 'pets/test_image.jpg';
-        Storage::disk('public')->put($imagePath, 'dummy content');
+        Storage::disk('local')->put($imagePath, 'dummy content');
         $media = $pet->media()->create(['path' => $imagePath, 'type' => 'image']);
 
-        Storage::disk('public')->assertExists($imagePath);
+        Storage::disk('local')->assertExists($imagePath);
 
         $response = $this->actingAs($user)->delete("/pets/{$pet->id}/media/{$media->id}");
         $response->assertRedirect();
 
         $this->assertCount(0, $pet->media()->get());
-        Storage::disk('public')->assertMissing($imagePath);
+        Storage::disk('local')->assertMissing($imagePath);
     }
 
     public function test_public_page_is_accessible_when_is_public_is_true(): void

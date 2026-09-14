@@ -16,7 +16,7 @@ class AlertWorkflowTest extends TestCase
 
     public function test_user_can_create_pet_with_custom_coordinates(): void
     {
-        \Illuminate\Support\Facades\Storage::fake('public');
+        \Illuminate\Support\Facades\Storage::fake('local');
         $user = User::factory()->create([
             'email_verified_at' => now(),
             'latitude' => -23.55052000,
@@ -43,7 +43,7 @@ class AlertWorkflowTest extends TestCase
 
     public function test_user_creates_pet_inheriting_user_coordinates_when_not_provided(): void
     {
-        \Illuminate\Support\Facades\Storage::fake('public');
+        \Illuminate\Support\Facades\Storage::fake('local');
         $user = User::factory()->create([
             'email_verified_at' => now(),
             'latitude' => -23.55052000,

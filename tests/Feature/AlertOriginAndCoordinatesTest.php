@@ -16,7 +16,7 @@ class AlertOriginAndCoordinatesTest extends TestCase
 
     public function test_pet_can_be_created_with_full_coordinates(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
 
         $user = User::factory()->create([
             'email_verified_at' => now(),

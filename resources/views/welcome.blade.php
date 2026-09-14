@@ -193,9 +193,9 @@
                         @if($pet->cover_photo)
                             @if($pet->cover_photo->type === 'video')
                                 <div class="pet-card-img" style="background-color: #f0f0f0; overflow: hidden;">
-                                    <video src="{{ asset('storage/' . $pet->cover_photo->path) }}" style="width: 100%; height: 100%; object-fit: cover;" autoplay muted loop playsinline></video>
+                                    <video src="{{ $pet->cover_photo->url }}" style="width: 100%; height: 100%; object-fit: cover;" autoplay muted loop playsinline></video>
                             @else
-                                <div class="pet-card-img" style="background-image: url('{{ asset('storage/' . $pet->cover_photo->path) }}'); background-color: #f0f0f0;">
+                                <div class="pet-card-img" style="background-image: url('{{ $pet->cover_photo->url }}'); background-color: #f0f0f0;">
                             @endif
                         @else
                             <div class="pet-card-img" style="background-color: #f0f0f0;">

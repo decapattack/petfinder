@@ -113,7 +113,7 @@ class PetController extends Controller
 
         foreach ($pet->media as $mediaItem) {
             if ($mediaItem->type === 'image' && !filter_var($mediaItem->path, FILTER_VALIDATE_URL)) {
-                Storage::disk('public')->delete($mediaItem->path);
+                Storage::disk('local')->delete($mediaItem->path);
             }
         }
 
@@ -273,7 +273,7 @@ class PetController extends Controller
         $this->authorize('destroyMedia', [$pet, $media]);
 
         if ($media->type === 'image' && !filter_var($media->path, FILTER_VALIDATE_URL)) {
-            Storage::disk('public')->delete($media->path);
+            Storage::disk('local')->delete($media->path);
         }
         $media->delete();
 

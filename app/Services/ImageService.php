@@ -76,11 +76,11 @@ class ImageService
         imagedestroy($sourceImage);
         imagedestroy($targetImage);
 
-        // 8. Salvar no disco público do Laravel
+        // 8. Salvar no disco local privado do Laravel
         $filename = Str::random(40) . '.jpg';
         $finalStoragePath = trim($directory, '/') . '/' . $filename;
 
-        Storage::disk('public')->put($finalStoragePath, file_get_contents($tempPath));
+        Storage::disk('local')->put($finalStoragePath, file_get_contents($tempPath));
 
         // 9. Deletar arquivo temporário
         if (file_exists($tempPath)) {

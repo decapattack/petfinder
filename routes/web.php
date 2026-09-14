@@ -4,6 +4,7 @@ use App\Http\Controllers\AlertController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HealthRecordController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\ProfileController;
@@ -31,6 +32,7 @@ Route::get('/auth/{provider}/callback', [AuthController::class, 'handleProviderC
 // ─── Public (no auth required) ───────────────────────────────────────────────
 Route::get('/pet/{uuid}', [PetController::class, 'showPublic'])->name('pets.public');
 Route::get('/pet/{uuid}/map', [PetController::class, 'showPublicMap'])->name('pets.public.map');
+Route::get('/media/{media}', [MediaController::class, 'serve'])->middleware('signed')->name('media.serve');
 
 // ─── Protected (logged in + email verified) ──────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {

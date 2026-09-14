@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Services\VideoEmbedService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\URL;
 
 class PetMedia extends Model
 {
@@ -26,6 +27,26 @@ class PetMedia extends Model
     public function getIsEmbedAttribute(): bool
     {
         return $this->type === 'video' || (bool) filter_var($this->path, FILTER_VALIDATE_URL);
+    }
+
+    /**
+     * Retorna a URL segura (assinada temporária) para imagens ou direta para vídeos.
+     */
+    public function getUrlAttribute(): string
+    {
+        if ($this->type === 'video' || (bool) filter_var($this->path, FILTER_VALIDATE_URL)) {
+            return (string) $this->path;
+        }
+
+        if (!$this->exists || !$this->id) {
+            return '';
+        }
+
+        return URL::temporarySignedRoute(
+            'media.serve',
+            now()->addMinutes(120),
+            ['media' => $this->id]
+        );
     }
 
     /**
@@ -55,7 +76,7 @@ class PetMedia extends Model
     public function getThumbnailUrlAttribute(): string
     {
         if ($this->type === 'image') {
-            return asset('storage/' . $this->path);
+            return $this->url;
         }
 
         $data = $this->embed_data;

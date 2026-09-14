@@ -19,12 +19,12 @@
                 </a>
                 <div class="d-flex align-items-center">
                     @if($pet->cover_photo && $pet->cover_photo->type === 'video')
-                        <video src="{{ asset('storage/' . $pet->cover_photo->path) }}" 
+                        <video src="{{ $pet->cover_photo->url }}" 
                                class="rounded-circle me-3" 
                                style="width: 60px; height: 60px; object-fit: cover; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" 
                                autoplay muted loop playsinline></video>
                     @elseif($pet->cover_photo)
-                        <img src="{{ asset('storage/' . $pet->cover_photo->path) }}" 
+                        <img src="{{ $pet->cover_photo->url }}" 
                              alt="{{ $pet->nome }}" 
                              class="rounded-circle me-3" 
                              style="width: 60px; height: 60px; object-fit: cover; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
