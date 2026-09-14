@@ -79,11 +79,16 @@
                                 <a href="{{ url('/pet/' . $pet->uuid) }}" class="btn btn-primary btn-sm flex-fill" target="_blank">Pública</a>
                             </div>
 
-                            <form action="{{ route('pets.destroy', $pet) }}" method="POST" onsubmit="return confirm('Tem certeza?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-link text-danger btn-sm w-100 p-0 text-decoration-none small">Remover Pet</button>
-                            </form>
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('pets.edit', $pet) }}" class="btn btn-light border btn-sm flex-fill text-center">
+                                    Editar
+                                </a>
+                                <form action="{{ route('pets.destroy', $pet) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja remover este pet?')" class="flex-fill m-0">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-dark btn-sm w-100">Remover</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
