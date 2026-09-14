@@ -27,29 +27,29 @@
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link" href="#perdidos">
-                        <i class="bi bi-exclamation-triangle me-1"></i>Alertas de Perdidos
+                        Alertas de Perdidos
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#como-funciona">
-                        <i class="bi bi-lightbulb me-1"></i>Como Funciona
+                        Como Funciona
                     </a>
                 </li>
                 @auth
                     <li class="nav-item d-lg-none">
                         <a class="nav-link" href="{{ route('dashboard') }}">
-                            <i class="bi bi-grid-fill me-1"></i>Meus Pets ({{ Auth::user()->name }})
+                            Meus Pets ({{ Auth::user()->name }})
                         </a>
                     </li>
                 @else
                     <li class="nav-item d-lg-none">
                         <a class="nav-link" href="{{ route('login') }}">
-                            <i class="bi bi-box-arrow-in-right me-1"></i>Entrar
+                            Entrar
                         </a>
                     </li>
                     <li class="nav-item d-lg-none">
                         <a class="nav-link text-danger fw-bold" href="{{ route('register') }}">
-                            <i class="bi bi-megaphone-fill me-1"></i>Reportar Pet
+                            Reportar Pet
                         </a>
                     </li>
                 @endauth
@@ -58,16 +58,16 @@
                 <div class="d-none d-lg-flex align-items-center gap-3">
                     <span class="text-muted">Olá, {{ Auth::user()->name }}</span>
                     <a href="{{ route('dashboard') }}" class="btn btn-reportar">
-                        <i class="bi bi-grid-fill me-1"></i> Meus Pets
+                         Meus Pets
                     </a>
                 </div>
             @else
                 <div class="d-none d-lg-flex align-items-center gap-2">
-                    <a href="{{ route('login') }}" class="btn btn-secondary" style="font-weight: 600; border-radius: 50px; padding: .5rem 1.25rem;">
+                    <a href="{{ route('login') }}" class="btn btn-secondary" style="font-weight: 600; padding: .5rem 1.25rem;">
                         Entrar
                     </a>
                     <a href="{{ route('register') }}" class="btn btn-reportar">
-                        <i class="bi bi-megaphone-fill me-1"></i> Reportar Pet
+                         Reportar Pet
                     </a>
                 </div>
             @endauth
@@ -81,22 +81,22 @@
         <div class="row align-items-center">
             <div class="col-lg-7">
                 <p class="text-uppercase fw-bold mb-2" style="color:rgba(255,255,255,.5);font-size:.8rem;letter-spacing:2px;">
-                    <i class="bi bi-heart-pulse-fill me-1"></i> Plataforma comunitária de busca
+                     Plataforma comunitária de busca
                 </p>
                 <h1>Perdeu seu amigo? <br>A comunidade ajuda a encontrar.</h1>
                 <p class="hero-sub mt-3 mb-4">Registre um alerta e milhares de pessoas na sua região serão notificadas. Juntos, trazemos pets de volta para casa.</p>
                 <div class="d-flex flex-wrap gap-3 mb-2">
                     @auth
                         <a href="{{ route('pets.create') }}" class="btn btn-lost btn-lg">
-                            <i class="bi bi-heartbreak me-2"></i>Perdi meu Pet
+                            Perdi meu Pet
                         </a>
                     @else
                         <a href="{{ route('register') }}" class="btn btn-lost btn-lg">
-                            <i class="bi bi-heartbreak me-2"></i>Perdi meu Pet
+                            Perdi meu Pet
                         </a>
                     @endauth
                     <button class="btn btn-found btn-lg" data-bs-toggle="modal" data-bs-target="#encontreiModal">
-                        <i class="bi bi-emoji-smile me-2"></i>Encontrei um Pet
+                        Encontrei um Pet
                     </button>
                 </div>
                 <!-- Busca Rápida -->
@@ -117,7 +117,7 @@
                             </div>
                             <div class="col-md-4">
                                 <button type="submit" class="btn btn-search w-100">
-                                    <i class="bi bi-search me-1"></i> Buscar Alertas
+                                     Buscar Alertas
                                 </button>
                             </div>
                         </div>
@@ -178,11 +178,11 @@
             <h2 class="section-title mb-0"><span class="title-dot lost"></span> Alerta SOS — Perdidos Recentemente</h2>
             @auth
                 <a href="{{ route('dashboard') }}" class="fw-bold text-decoration-none" style="color:var(--lost-color);font-size:.9rem;">
-                    Ver todos <i class="bi bi-arrow-right"></i>
+                    Ver todos 
                 </a>
             @else
                 <a href="#" class="fw-bold text-decoration-none" style="color:var(--lost-color);font-size:.9rem;">
-                    Ver todos <i class="bi bi-arrow-right"></i>
+                    Ver todos 
                 </a>
             @endauth
         </div>
@@ -200,24 +200,24 @@
                         @else
                             <div class="pet-card-img" style="background-color: #f0f0f0;">
                                 <div class="img-placeholder d-flex align-items-center justify-content-center h-100">
-                                    <i class="bi bi-image" style="font-size: 3rem; color: rgba(0,0,0,.15);"></i>
+                                    
                                 </div>
                         @endif
-                            <span class="pet-badge lost"><i class="bi bi-exclamation-circle-fill"></i> PERDIDO</span>
+                            <span class="pet-badge lost"> PERDIDO</span>
                         </div>
                         <div class="pet-card-body">
                             <h5>{{ $pet->nome }}</h5>
                             <div class="pet-meta">
-                                <i class="bi bi-tag"></i> {{ $pet->especie }}
+                                 {{ $pet->especie }}
                             </div>
                             <div class="pet-meta">
-                                <i class="bi bi-geo-alt-fill"></i> {{ $pet->cidade ?? 'Local não informado' }}
+                                 {{ $pet->cidade ?? 'Local não informado' }}
                             </div>
                             <div class="pet-meta">
-                                <i class="bi bi-calendar3"></i> Perdido recentemente
+                                 Perdido recentemente
                             </div>
                             <a href="{{ url('/pet/' . $pet->uuid) }}" class="btn btn-info-lost mt-3">
-                                <i class="bi bi-eye-fill me-1"></i> Ver Detalhes
+                                 Ver Detalhes
                             </a>
                         </div>
                     </div>
@@ -248,7 +248,7 @@
                 <div class="step-card">
                     <div class="position-relative d-inline-block">
                         <div class="step-icon s1">
-                            <i class="bi bi-pencil-square"></i>
+                            🐾
                         </div>
                         <div class="step-num">1</div>
                     </div>
@@ -260,7 +260,7 @@
                 <div class="step-card">
                     <div class="position-relative d-inline-block">
                         <div class="step-icon s2">
-                            <i class="bi bi-broadcast-pin"></i>
+                            🐾
                         </div>
                         <div class="step-num">2</div>
                     </div>
@@ -272,7 +272,7 @@
                 <div class="step-card">
                     <div class="position-relative d-inline-block">
                         <div class="step-icon s3">
-                            <i class="bi bi-emoji-heart-eyes"></i>
+                            🐾
                         </div>
                         <div class="step-num">3</div>
                     </div>
@@ -297,8 +297,8 @@
                 <div class="row g-3">
                     <div class="col-12">
                         <div class="d-flex bg-light p-4 rounded-4 shadow-sm border-start border-primary border-4 hover-translate-y">
-                            <div class="me-4 text-primary fs-1">
-                                <i class="fa-solid fa-syringe"></i>
+                            <div class="me-4 text-primary fs-2">
+                                🐾
                             </div>
                             <div>
                                 <h5 class="fw-bold mb-2">Controle de Vacinas & Lembretes</h5>
@@ -308,8 +308,8 @@
                     </div>
                     <div class="col-12">
                         <div class="d-flex bg-light p-4 rounded-4 shadow-sm border-start border-success border-4 hover-translate-y">
-                            <div class="me-4 text-success fs-1">
-                                <i class="fa-solid fa-notes-medical"></i>
+                            <div class="me-4 text-success fs-2">
+                                🐾
                             </div>
                             <div>
                                 <h5 class="fw-bold mb-2">Prontuário Clínico & Exames</h5>
@@ -319,8 +319,8 @@
                     </div>
                     <div class="col-12">
                         <div class="d-flex bg-light p-4 rounded-4 shadow-sm border-start border-info border-4 hover-translate-y">
-                            <div class="me-4 text-info fs-1">
-                                <i class="fa-solid fa-qrcode"></i>
+                            <div class="me-4 text-info fs-2">
+                                🐾
                             </div>
                             <div>
                                 <h5 class="fw-bold mb-2">Identificação Inteligente Integrada</h5>
@@ -345,18 +345,18 @@
                         <div class="mb-3 pb-3 border-bottom">
                             <strong class="d-block text-dark small mb-1">PRÓXIMO LEMBRETE:</strong>
                             <div class="d-flex align-items-center text-danger small">
-                                <i class="fa-solid fa-clock me-2"></i>
+                                
                                 <span>Vacina Antirrábica - 10/10/2026</span>
                             </div>
                         </div>
                         <div>
                             <strong class="d-block text-dark small mb-2">FICHAS CLÍNICAS RECENTES:</strong>
                             <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded mb-2 text-dark small">
-                                <span><i class="fa-solid fa-file-pdf me-2 text-danger"></i>Hemograma.pdf</span>
+                                <span>Hemograma.pdf</span>
                                 <span class="badge bg-secondary">Exame</span>
                             </div>
                             <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded text-dark small">
-                                <span><i class="fa-solid fa-file-image me-2 text-primary"></i>Vacina_V10.jpg</span>
+                                <span>Vacina_V10.jpg</span>
                                 <span class="badge bg-primary">Vacina</span>
                             </div>
                         </div>
@@ -374,43 +374,37 @@
             <div class="col-lg-4">
                 <h6 class="d-flex align-items-center gap-2"><svg width="28" height="20" viewBox="0 0 190 140" fill="#0d6efd" xmlns="http://www.w3.org/2000/svg"><g transform="translate(5,0) rotate(-12,50,75)"><ellipse cx="50" cy="80" rx="20" ry="22"/><ellipse cx="21" cy="52" rx="9" ry="13" transform="rotate(-20 21 52)"/><ellipse cx="37" cy="41" rx="8" ry="12" transform="rotate(-5 37 41)"/><ellipse cx="63" cy="41" rx="8" ry="12" transform="rotate(5 63 41)"/><ellipse cx="79" cy="52" rx="9" ry="13" transform="rotate(20 79 52)"/></g><g transform="translate(95,18) rotate(12,50,75)"><ellipse cx="50" cy="80" rx="22" ry="24"/><ellipse cx="20" cy="50" rx="10" ry="14" transform="rotate(-20 20 50)"/><ellipse cx="37" cy="39" rx="9" ry="13" transform="rotate(-5 37 39)"/><ellipse cx="63" cy="39" rx="9" ry="13" transform="rotate(5 63 39)"/><ellipse cx="80" cy="50" rx="10" ry="14" transform="rotate(20 80 50)"/></g></svg>PetFinder</h6>
                 <p style="font-size:.88rem;">Plataforma comunitária de utilidade pública dedicada a reunir animais perdidos com suas famílias. Cada alerta pode mudar uma história.</p>
-                <div class="mt-3">
-                    <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
-                    <a href="#" class="social-icon"><i class="bi bi-whatsapp"></i></a>
-                </div>
             </div>
             <div class="col-6 col-lg-2">
                 <h6>Navegação</h6>
                 <ul class="list-unstyled d-flex flex-column gap-2">
-                    <li><a href="#perdidos">Alertas de Perdidos</a></li>
+                    <li><a href="#alertas">Alertas</a></li>
                     <li><a href="#como-funciona">Como Funciona</a></li>
-                    <li><a href="{{ route('register') }}">Reportar Pet</a></li>
+                    <li><a href="#recursos-saude">Gestão de Saúde</a></li>
                 </ul>
             </div>
-            <div class="col-6 col-lg-3">
+            <div class="col-6 col-lg-2">
                 <h6>Conta</h6>
                 <ul class="list-unstyled d-flex flex-column gap-2">
                     @auth
-                        <li><a href="{{ route('dashboard') }}"><i class="bi bi-grid me-1"></i>Meus Pets</a></li>
-                        <li><a href="{{ route('profile.edit') }}"><i class="bi bi-person me-1"></i>Meu Perfil</a></li>
+                        <li><a href="{{ route('dashboard') }}">Meus Pets</a></li>
+                        <li><a href="{{ route('profile.edit') }}">Meu Perfil</a></li>
                     @else
-                        <li><a href="{{ route('login') }}"><i class="bi bi-box-arrow-in-right me-1"></i>Entrar</a></li>
-                        <li><a href="{{ route('register') }}"><i class="bi bi-person-plus me-1"></i>Criar Conta</a></li>
+                        <li><a href="{{ route('login') }}">Entrar</a></li>
+                        <li><a href="{{ route('register') }}">Criar Conta</a></li>
                     @endauth
                 </ul>
             </div>
             <div class="col-lg-3">
                 <h6>Contato</h6>
                 <ul class="list-unstyled d-flex flex-column gap-2">
-                    <li><a href="#"><i class="bi bi-envelope me-2"></i>contato@petfinder.com.br</a></li>
-                    <li><a href="#"><i class="bi bi-whatsapp me-2"></i>(11) 99999-0000</a></li>
+                    <li><a href="#">contato@petfinder.com.br</a></li>
+                    <li><a href="#">(11) 99999-0000</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom text-center">
-            <small>© {{ date('Y') }} PetFinder — Feito com <i class="bi bi-heart-fill" style="color:var(--lost-color)"></i> para quem ama seus pets.</small>
+            <small>© {{ date('Y') }} PetFinder — Feito com 🐾 para quem ama seus pets.</small>
         </div>
     </div>
 </footer>
@@ -420,20 +414,20 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header" style="background: var(--found-color); color: #fff;">
-                <h5 class="modal-title"><i class="bi bi-emoji-smile me-2"></i>Encontrei um Pet</h5>
+                <h5 class="modal-title">Encontrei um Pet</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
                 <p class="text-center mb-4">Você encontrou um animal perdido? Veja como ajudar:</p>
                 <div class="d-grid gap-2">
                     <a href="#" class="btn btn-secondary text-start">
-                        <i class="bi bi-upc-scan me-2"></i>Ler QR Code da coleira
+                        Ler QR Code da coleira
                     </a>
                     <a href="#" class="btn btn-secondary text-start">
-                        <i class="bi bi-search me-2"></i>Buscar alertas na região
+                        Buscar alertas na região
                     </a>
                     <a href="tel:190" class="btn btn-secondary text-start">
-                        <i class="bi bi-telephone me-2"></i>Contatar autoridades (190)
+                        Contatar autoridades (190)
                     </a>
                 </div>
             </div>

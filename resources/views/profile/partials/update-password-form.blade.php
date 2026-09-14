@@ -29,7 +29,7 @@
             <x-primary-button>{{ __('Salvar Senha') }}</x-primary-button>
 
             @if (session('status') === 'password-updated')
-                <span class="text-success small">✔ Senha atualizada!</span>
+                <span class="text-success small">Senha atualizada!</span>
             @endif
         </div>
     </form>

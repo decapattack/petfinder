@@ -48,7 +48,7 @@
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     @guest
                         <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Entrar</a></li>
-                        <li class="nav-item ms-lg-2"><a class="btn btn-primary btn-sm rounded-pill px-3 mt-2 mt-lg-0" href="{{ route('register') }}">Cadastrar</a></li>
+                        <li class="nav-item ms-lg-2"><a class="btn btn-primary btn-sm px-3 mt-2 mt-lg-0" href="{{ route('register') }}">Cadastrar</a></li>
                     @else
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('dashboard') ? 'active fw-bold' : '' }}" href="{{ route('dashboard') }}">Meus Pets</a>
@@ -60,7 +60,7 @@
                         {{-- Notificações --}}
                         <li class="nav-item dropdown px-1">
                             <a class="nav-link dropdown-toggle position-relative" href="#" data-bs-toggle="dropdown">
-                                🔔 Notificações
+                                 Notificações
                                 @if(Auth::user()->unreadNotifications->count() > 0)
                                     <span class="badge rounded-pill bg-danger" style="font-size:.6rem;">
                                         {{ Auth::user()->unreadNotifications->count() }}
@@ -72,7 +72,7 @@
                                 @forelse(Auth::user()->unreadNotifications as $notification)
                                     <li>
                                         <a class="dropdown-item py-3 border-bottom small" href="{{ route('pets.public', $notification->data['pet_uuid'] ?? '#') }}">
-                                            <strong class="d-block text-danger">🚨 Alerta Próximo</strong>
+                                            <strong class="d-block text-danger"> Alerta Próximo</strong>
                                             {{ $notification->data['mensagem'] ?? 'Alerta de pet perdido na região.' }}
                                         </a>
                                     </li>
@@ -85,7 +85,7 @@
                         <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="btn btn-danger btn-sm rounded-pill px-3">Sair</button>
+                                <button type="submit" class="btn btn-danger btn-sm px-3">Sair</button>
                             </form>
                         </li>
                     @endguest
@@ -99,13 +99,13 @@
             {{-- Mensagens de Status --}}
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+                     {{ session('success') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
             @if(session('error'))
                 <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ session('error') }}
+                     {{ session('error') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif

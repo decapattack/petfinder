@@ -25,7 +25,7 @@
             top: 8px;
             right: 8px;
             z-index: 10;
-            background-color: rgba(220, 53, 69, 0.9);
+            background-color: #dc3545;
             color: white;
             border: none;
             width: 32px;
@@ -50,8 +50,8 @@
         <div class="col-md-11">
             <!-- Header -->
             <div class="d-flex align-items-center mb-4">
-                <a href="{{ route('dashboard') }}" class="btn btn-secondary rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                    <i class="bi bi-arrow-left"></i>
+                <a href="{{ route('dashboard') }}" class="btn btn-secondary me-3 px-3">
+                    Voltar
                 </a>
                 <div>
                     <h2 class="mb-0 fw-bold">Editar Pet: {{ $pet->nome }}</h2>
@@ -140,18 +140,18 @@
                                 <div class="card bg-light border-0 p-3 mb-4 rounded-3">
                                     <div class="d-flex align-items-center justify-content-between mb-2">
                                         <div class="fw-bold d-flex align-items-center">
-                                            <i class="bi bi-geo-alt-fill text-danger me-2"></i>Localização Residencial
+                                            Localização Residencial
                                         </div>
                                         <span class="badge {{ $currentLat && $currentLng ? 'bg-success' : 'bg-secondary' }}" id="petGpsBadge">
-                                            {{ $currentLat && $currentLng ? '📍 Definida' : '⚠️ Não definida' }}
+                                            {{ $currentLat && $currentLng ? 'Definida' : 'Não definida' }}
                                         </span>
                                     </div>
                                     <p class="small text-muted mb-2">
                                         Ponto de busca padrão em alertas residenciais. Pode ser atualizado a qualquer momento.
                                     </p>
                                     <div class="d-flex flex-wrap align-items-center gap-2">
-                                        <button type="button" class="btn btn-outline-primary btn-sm rounded-pill d-inline-flex align-items-center" onclick="capturePetGps()" id="btnCaptureGps">
-                                            <i class="bi bi-crosshair me-1"></i><span id="btnCaptureGpsText">Atualizar via GPS</span>
+                                        <button type="button" class="btn btn-primary btn-sm d-inline-flex align-items-center" onclick="capturePetGps()" id="btnCaptureGps">
+                                            <span id="btnCaptureGpsText">Atualizar via GPS</span>
                                         </button>
                                         <small class="text-muted" id="petGpsCoords">
                                             @if($currentLat && $currentLng)
@@ -166,7 +166,7 @@
                                 <input type="hidden" name="longitude" id="pet_longitude" value="{{ $currentLng }}">
 
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+                                    <button type="submit" class="btn btn-primary btn-lg">
                                         Salvar Alterações
                                     </button>
                                 </div>
@@ -184,8 +184,8 @@
                                     <h4 class="fw-bold mb-1">Mídias do Pet</h4>
                                     <p class="text-muted small mb-0">Fotos enviadas e vídeos externos incorporados.</p>
                                 </div>
-                                <button type="button" class="btn btn-danger btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addVideoModal">
-                                    <i class="bi bi-link-45deg me-1"></i>+ Link de Vídeo
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#addVideoModal">
+                                    + Link de Vídeo
                                 </button>
                             </div>
 
@@ -199,7 +199,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="delete-btn" title="Remover mídia">
-                                                    <i class="bi bi-trash"></i>
+                                                    &times;
                                                 </button>
                                             </form>
 
@@ -209,12 +209,12 @@
                                                     <img src="{{ $embedData['thumbnail_url'] }}" alt="Vídeo {{ $pet->nome }}">
                                                 @else
                                                     <div class="d-flex flex-column align-items-center justify-content-center h-100 bg-dark text-white p-2 text-center">
-                                                        <i class="bi bi-camera-video-fill fs-2 text-danger mb-1"></i>
+                                                        
                                                         <span class="small text-truncate w-100">{{ ucfirst($embedData['platform'] ?? 'Vídeo') }}</span>
                                                     </div>
                                                 @endif
                                                 <div class="position-absolute bottom-0 start-0 m-2 bg-dark bg-opacity-75 text-white rounded px-2 py-1 small">
-                                                    <i class="bi bi-play-circle me-1"></i> {{ ucfirst($embedData['platform'] ?? 'Vídeo') }}
+                                                     {{ ucfirst($embedData['platform'] ?? 'Vídeo') }}
                                                 </div>
                                             @else
                                                 <img src="{{ asset('storage/' . $mediaItem->path) }}" alt="Foto do pet">
@@ -236,7 +236,7 @@
                                             <input type="file" name="media[]" class="d-none" multiple accept="image/jpeg,image/png,image/webp,image/bmp,image/gif" 
                                                    onchange="document.getElementById('addMediaForm').submit()">
                                             <div class="text-center text-primary">
-                                                <i class="bi bi-cloud-arrow-up fs-2 mb-1 d-block"></i>
+                                                
                                                 <div class="small fw-bold">+ Adicionar Fotos</div>
                                                 <div class="text-muted" style="font-size: 0.75rem;">Otimização automática</div>
                                             </div>
@@ -256,7 +256,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title"><i class="bi bi-play-circle-fill me-2"></i>Adicionar Link de Vídeo</h5>
+                    <h5 class="modal-title">Adicionar Link de Vídeo</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="{{ route('pets.media.store', $pet) }}" method="POST">
@@ -306,7 +306,7 @@
                     btn.disabled = false;
                     btnText.textContent = 'Atualizar via GPS';
                     badge.className = 'badge bg-success';
-                    badge.textContent = '📍 Definida via GPS';
+                    badge.textContent = 'Definida via GPS';
                     coordsText.textContent = '(Localização atual capturada!)';
                 },
                 function(err) {

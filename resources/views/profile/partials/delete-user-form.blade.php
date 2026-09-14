@@ -14,7 +14,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">⚠️ Confirmar Exclusão de Conta</h5>
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão de Conta</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <form method="post" action="{{ route('profile.destroy') }}">

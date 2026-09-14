@@ -5,7 +5,7 @@
     <style>
         .health-record-card { transition: transform .15s, box-shadow .15s; border-radius: 12px; }
         .health-record-card:hover { transform: translateY(-2px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.1) !important; }
-        .nav-pills .nav-link { border-radius: 50px; padding: 10px 20px; font-weight: 600; color: #6c757d; }
+        .nav-pills .nav-link { padding: 10px 20px; font-weight: 600; color: #6c757d; }
         .nav-pills .nav-link.active { background: var(--primary-gradient); color: white; }
     </style>
     @endpush
@@ -14,8 +14,8 @@
         <div class="col-12">
             <!-- Header -->
             <div class="d-flex align-items-center mb-4">
-                <a href="{{ route('dashboard') }}" class="btn btn-secondary rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                    <i class="bi bi-arrow-left"></i>
+                <a href="{{ route('dashboard') }}" class="btn btn-secondary me-3 px-3">
+                    Voltar
                 </a>
                 <div class="d-flex align-items-center">
                     @if($pet->cover_photo && $pet->cover_photo->type === 'video')
@@ -31,7 +31,7 @@
                     @else
                         <div class="rounded-circle me-3 bg-light d-flex align-items-center justify-content-center" 
                              style="width: 60px; height: 60px; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                            <i class="bi bi-image" style="font-size: 1.5rem; color: rgba(0,0,0,.15);"></i>
+                            
                         </div>
                     @endif
                     <div>
@@ -46,7 +46,7 @@
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold m-0 d-flex align-items-center">
-                            <i class="bi bi-heart-pulse me-2 text-danger"></i>
+                            
                             Veterinário de Confiança
                         </h5>
                         @if($pet->veterinarian)
@@ -54,8 +54,8 @@
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="remove_vet" value="1">
-                                <button type="submit" class="btn btn-danger btn-sm rounded-pill">
-                                    <i class="bi bi-x-circle me-1"></i> Desvincular Vet
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                     Desvincular Vet
                                 </button>
                             </form>
                         @endif
@@ -77,7 +77,7 @@
                                 </select>
                             </div>
                             <div class="col-md-4 d-flex align-items-end">
-                                <button type="submit" class="btn btn-secondary w-100 rounded-pill">Selecionar Existente</button>
+                                <button type="submit" class="btn btn-secondary w-100">Selecionar Existente</button>
                             </div>
                         </form>
                     @endif
@@ -115,7 +115,7 @@
                             <input type="text" name="estado" class="form-control" value="{{ old('estado', $pet->veterinarian->estado ?? '') }}" placeholder="SP" maxlength="2">
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100 rounded-pill">
+                            <button type="submit" class="btn btn-primary w-100">
                                 {{ $pet->veterinarian ? 'Salvar' : 'Cadastrar' }}
                             </button>
                         </div>
@@ -127,12 +127,12 @@
             <ul class="nav nav-pills mb-4 gap-2" id="healthTab" role="tablist">
                 <li class="nav-item">
                     <button class="nav-link active" id="records-tab" data-bs-toggle="tab" data-bs-target="#records" type="button">
-                        <i class="bi bi-folder2-open me-2"></i>Fichas Clínicas
+                        Fichas Clínicas
                     </button>
                 </li>
                 <li class="nav-item">
                     <button class="nav-link" id="schedules-tab" data-bs-toggle="tab" data-bs-target="#schedules" type="button">
-                        <i class="bi bi-calendar-check me-2"></i>Lembretes
+                        Lembretes
                     </button>
                 </li>
             </ul>
@@ -153,16 +153,16 @@
                                 <div class="col-md-4">
                                     <div class="card h-100 shadow-sm health-record-card">
                                         <div class="card-body text-center py-4">
-                                            <i class="bi {{ $record->file_icon }} display-4" style="color: {{ $record->icon_color }};"></i>
+                                            
                                             <h6 class="fw-bold mt-3 mb-1 text-truncate">{{ $record->title }}</h6>
                                             <span class="badge bg-light text-dark border mb-3">
                                                 {{ \App\Models\HealthRecord::$categories[$record->category] ?? $record->category }}
                                             </span>
                                             <div class="d-flex justify-content-center gap-2">
-                                                <a href="{{ $record->view_url }}" target="_blank" class="btn btn-sm btn-primary rounded-pill">Ver</a>
+                                                <a href="{{ $record->view_url }}" target="_blank" class="btn btn-sm btn-primary">Ver</a>
                                                 <form action="{{ route('pets.records.destroy', ['pet' => $pet, 'record' => $record]) }}" method="POST" onsubmit="return confirm('Excluir permanentemente?')">
                                                     @csrf @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger rounded-pill">Excluir</button>
+                                                    <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -172,7 +172,7 @@
                         </div>
                     @else
                         <div class="text-center py-5 bg-white rounded-4 shadow-sm border">
-                            <i class="bi bi-folder2-open display-1 text-muted opacity-25"></i>
+                            
                             <p class="text-muted mt-3">Nenhuma ficha cadastrada para este pet.</p>
                         </div>
                     @endif
@@ -216,7 +216,7 @@
                                         <div class="{{ $schedule->is_completed ? 'text-decoration-line-through opacity-50' : '' }}">
                                             <h6 class="mb-0 fw-bold">{{ $schedule->title }}</h6>
                                             <small class="text-muted">
-                                                <i class="bi bi-calendar3 me-1"></i> {{ $schedule->due_date->format('d/m/Y') }} 
+                                                 {{ $schedule->due_date->format('d/m/Y') }} 
                                                 <span class="badge bg-light text-dark border ms-2">
                                                     {{ \App\Models\PetSchedule::$types[$schedule->type] ?? $schedule->type }}
                                                 </span>
@@ -225,14 +225,14 @@
                                     </div>
                                     <form action="{{ route('pets.schedules.destroy', ['pet' => $pet, 'schedule' => $schedule]) }}" method="POST" onsubmit="return confirm('Remover?')">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-link text-danger p-0"><i class="bi bi-trash"></i></button>
+                                        <button type="submit" class="btn btn-link text-danger p-0 text-decoration-none small">Remover</button>
                                     </form>
                                 </div>
                             @endforeach
                         </div>
                     @else
                         <div class="text-center py-5 bg-white rounded-4 shadow-sm border">
-                            <i class="bi bi-calendar-check display-1 text-muted opacity-25"></i>
+                            
                             <p class="text-muted mt-3">Tudo em dia! Nenhum lembrete pendente.</p>
                         </div>
                     @endif

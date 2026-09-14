@@ -41,14 +41,14 @@
         <input type="hidden" name="longitude" id="lng">
 
         <div id="geo-alert" class="alert alert-info py-2 small d-none">
-            📍 <strong>Radar Pet:</strong> Ative sua localização para emitir alertas num raio de 1 KM.
+            <strong>Radar Pet:</strong> Ative sua localização para emitir alertas num raio de 1 KM.
             <button type="button" class="btn btn-sm btn-info text-white ms-2" onclick="getLocation()">Ativar GPS</button>
         </div>
         <div id="geo-success" class="alert alert-success py-2 small d-none">
-            ✅ Localização capturada!
+            Localização capturada!
         </div>
         <div id="geo-info" class="alert alert-warning py-2 small d-none">
-            ⚠️ Você pode finalizar o cadastro sem localização, mas precisará ativá-la no perfil para usar o Radar 1 KM.
+            Você pode finalizar o cadastro sem localização, mas precisará ativá-la no perfil para usar o Radar 1 KM.
         </div>
 
         <div class="d-grid gap-2 mt-3">

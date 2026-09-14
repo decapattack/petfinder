@@ -14,8 +14,8 @@
 
     <div class="container py-3">
         <div class="d-flex align-items-center mb-3">
-            <a href="{{ route('pets.public', $pet->uuid) }}" class="btn btn-secondary rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                <i class="bi bi-arrow-left"></i>
+            <a href="{{ route('pets.public', $pet->uuid) }}" class="btn btn-secondary me-3 px-3">
+                Voltar
             </a>
             <div>
                 <h4 class="fw-bold mb-0">Mapa de Busca: {{ $pet->nome }}</h4>
@@ -35,8 +35,8 @@
         </div>
 
         <div class="text-center">
-            <a href="{{ route('pets.public', $pet->uuid) }}" class="btn btn-primary btn-lg rounded-pill px-4">
-                <i class="bi bi-arrow-left me-2"></i>Voltar para Página do Pet
+            <a href="{{ route('pets.public', $pet->uuid) }}" class="btn btn-primary btn-lg px-4">
+                Voltar para Página do Pet
             </a>
         </div>
     </div>

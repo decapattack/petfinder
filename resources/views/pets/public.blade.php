@@ -32,9 +32,9 @@
                                         </div>
                                     @else
                                         <div class="d-flex flex-column align-items-center justify-content-center bg-dark text-white p-4" style="height: 400px;">
-                                            <i class="bi bi-play-circle fs-1 mb-2 text-danger"></i>
+                                            
                                             <a href="{{ $item->path }}" target="_blank" class="btn btn-light btn-sm">
-                                                <i class="bi bi-box-arrow-up-right me-1"></i> Abrir Vídeo
+                                                 Abrir Vídeo
                                             </a>
                                         </div>
                                     @endif
@@ -45,7 +45,7 @@
                         @empty
                             <div class="carousel-item active">
                                 <div class="d-flex align-items-center justify-content-center bg-light" style="height: 400px;">
-                                    <i class="bi bi-image" style="font-size: 4rem; color: rgba(0,0,0,.15);"></i>
+                                    
                                 </div>
                             </div>
                         @endforelse
@@ -71,7 +71,6 @@
                 <div class="card-body p-4 text-center">
                     @if(!$pet->is_public && $pet->status !== 'desaparecido')
                         <div class="alert alert-secondary py-2 px-3 mb-3 text-start small d-flex align-items-center rounded-3">
-                            <i class="bi bi-eye-slash-fill me-2 fs-5 text-secondary"></i>
                             <div>
                                 <strong>Modo de Pré-visualização do Tutor:</strong> Esta página está <u>desativada para o público</u>. Visitantes não autorizados receberão erro 404.
                             </div>
@@ -80,7 +79,7 @@
 
                     <div class="mb-3">
                         <span class="badge {{ $pet->status == 'seguro' ? 'bg-success' : 'bg-danger' }} fs-6 p-2">
-                            {{ $pet->status == 'seguro' ? 'ESTOU SEGURO' : 'ESTOU PERDIDO! 🚨' }}
+                            {{ $pet->status == 'seguro' ? 'ESTOU SEGURO' : 'ESTOU PERDIDO!' }}
                         </span>
                     </div>
 
@@ -89,7 +88,7 @@
 
                     @if($pet->condicoes_especiais)
                         <div class="alert alert-warning py-2 text-start">
-                            <strong>⚠️ Condições Especiais:</strong><br>
+                            <strong>Condições Especiais:</strong><br>
                             {{ $pet->condicoes_especiais }}
                         </div>
                     @endif
@@ -105,7 +104,7 @@
                             <!-- Mapa para PC (Desktop: d-none d-md-block) -->
                             <div class="d-none d-md-block border rounded-3 p-3 bg-light text-start">
                                 <h6 class="fw-bold mb-2 text-dark d-flex align-items-center">
-                                    <i class="bi bi-geo-alt-fill me-2 text-danger"></i>Região do Desaparecimento
+                                    Região do Desaparecimento
                                 </h6>
                                 <div id="map-desktop"></div>
                                 <small class="text-muted d-block mt-1">Margem de segurança ~100m para proteção de privacidade.</small>
@@ -113,8 +112,8 @@
 
                             <!-- Botão para Mobile (d-md-none) -->
                             <div class="d-md-none">
-                                <a href="{{ route('pets.public.map', $pet->uuid) }}" class="btn btn-primary btn-lg w-100 rounded-pill shadow-sm py-3 fw-bold">
-                                    <i class="bi bi-map-fill me-2"></i>Exibir no Mapa 🗺️
+                                <a href="{{ route('pets.public.map', $pet->uuid) }}" class="btn btn-primary btn-lg w-100 shadow-sm py-3 fw-bold">
+                                    Exibir no Mapa
                                 </a>
                             </div>
                         </div>
@@ -141,11 +140,11 @@
                             <a href="https://wa.me/55{{ $phoneDigits }}"
                                class="btn btn-success btn-lg"
                                target="_blank" rel="noopener noreferrer">
-                                💬 Falar via WhatsApp
+                                Falar via WhatsApp
                             </a>
                             <a href="tel:+55{{ $phoneDigits }}"
                                class="btn btn-primary btn-lg">
-                                📞 Ligar para Responsável
+                                Ligar para Responsável
                             </a>
                         </div>
                     @elseif($pet->status == 'desaparecido')

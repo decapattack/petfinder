@@ -6,7 +6,7 @@
         <div class="d-flex gap-2">
             <form action="{{ route('alerts.test') }}" method="POST">
                 @csrf
-                <button type="submit" class="btn btn-secondary btn-sm rounded-pill">Testar Notificação 🔔</button>
+                <button type="submit" class="btn btn-secondary btn-sm">Testar Notificação</button>
             </form>
             <a href="{{ route('pets.create') }}" class="btn btn-primary">+ Cadastrar Pet</a>
         </div>
@@ -23,7 +23,7 @@
                                 <img src="{{ $embedData['thumbnail_url'] }}" class="card-img-top" alt="{{ $pet->nome }}" style="height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
                             @else
                                 <div class="card-img-top d-flex flex-column align-items-center justify-content-center bg-dark text-white" style="height: 200px; border-top-left-radius: 15px; border-top-right-radius: 15px;">
-                                    <i class="bi bi-play-circle fs-1 text-danger mb-1"></i>
+                                    
                                     <span class="small">{{ ucfirst($embedData['platform'] ?? 'Vídeo') }}</span>
                                 </div>
                             @endif
@@ -32,7 +32,7 @@
                         @endif
                     @else
                         <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px; border-top-left-radius: 15px; border-top-right-radius: 15px;">
-                            <i class="bi bi-image" style="font-size: 3rem; color: rgba(0,0,0,.15);"></i>
+                            
                         </div>
                     @endif
                     <div class="card-body">
@@ -47,11 +47,11 @@
                         
                         <div class="d-flex align-items-center mb-3">
                             <span class="badge {{ $pet->status == 'seguro' ? 'bg-success' : 'bg-danger animate-pulse' }}">
-                                {{ $pet->status == 'seguro' ? 'SEGURO' : '🚨 DESAPARECIDO' }}
+                                {{ $pet->status == 'seguro' ? 'SEGURO' : 'DESAPARECIDO' }}
                             </span>
                             @if(!$pet->is_public)
                                 <span class="badge bg-secondary ms-2" title="Página pública desativada para visitantes">
-                                    <i class="bi bi-lock-fill me-1"></i>Privado
+                                    Privado
                                 </span>
                             @endif
                         </div>
@@ -64,19 +64,19 @@
                         <div class="d-grid gap-2">
                             @if($pet->status == 'seguro')
                                 <button type="button" class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#emitAlertModal{{ $pet->id }}">
-                                    🚨 Emitir Alerta (1 KM)
+                                    Emitir Alerta (1 KM)
                                 </button>
                             @else
                                 <button type="button" class="btn btn-success btn-sm w-100" data-bs-toggle="modal" data-bs-target="#resolveModal{{ $pet->id }}">
-                                    ✅ Encontrei meu Pet!
+                                    Encontrei meu Pet!
                                 </button>
                             @endif
 
                             <div class="d-flex gap-2">
-                                <a href="{{ route('pets.health', $pet) }}" class="btn btn-outline-success btn-sm flex-fill">
-                                    <i class="bi bi-heart-pulse me-1"></i>Saúde
+                                <a href="{{ route('pets.health', $pet) }}" class="btn btn-success btn-sm flex-fill">
+                                    Saúde
                                 </a>
-                                <a href="{{ url('/pet/' . $pet->uuid) }}" class="btn btn-outline-primary btn-sm flex-fill" target="_blank">Pública</a>
+                                <a href="{{ url('/pet/' . $pet->uuid) }}" class="btn btn-primary btn-sm flex-fill" target="_blank">Pública</a>
                             </div>
 
                             <form action="{{ route('pets.destroy', $pet) }}" method="POST" onsubmit="return confirm('Tem certeza?')">
@@ -95,7 +95,7 @@
                         <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
                             <div class="modal-header border-0 pb-0 pt-4 px-4 d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h4 class="modal-title fw-bold text-dark" id="emitAlertLabel{{ $pet->id }}">🚨 Fugiu de onde?</h4>
+                                    <h4 class="modal-title fw-bold text-dark" id="emitAlertLabel{{ $pet->id }}"> Fugiu de onde?</h4>
                                     <p class="text-muted small mb-0">Ponto de partida das buscas por <strong>{{ $pet->nome }}</strong>:</p>
                                 </div>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -106,17 +106,12 @@
                                     @csrf
                                     <input type="hidden" name="pet_id" value="{{ $pet->id }}">
                                     <input type="hidden" name="origem" value="casa">
-                                    <button type="submit" class="btn btn-primary w-100 p-3 text-start rounded-4 shadow-sm border-0 d-flex align-items-center justify-content-between transition-hover">
-                                        <div class="d-flex align-items-center">
-                                            <div class="bg-white text-primary rounded-circle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; min-width: 48px;">
-                                                <i class="bi bi-house-door-fill fs-4"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold fs-5 text-white">🏠 Casa (Endereço Cadastrado)</div>
-                                                <small class="text-white-50 d-block">Usa a localização da residência salva no cadastro.</small>
-                                            </div>
+                                    <button type="submit" class="btn btn-primary w-100 p-3 text-start shadow-sm border-0 d-flex align-items-center justify-content-between transition-hover">
+                                        <div>
+                                            <div class="fw-bold fs-5 text-white">Casa (Endereço Cadastrado)</div>
+                                            <small class="text-white-50 d-block">Usa a localização da residência salva no cadastro.</small>
                                         </div>
-                                        <i class="bi bi-chevron-right fs-4 text-white"></i>
+                                        <span class="fs-5 text-white">&rarr;</span>
                                     </button>
                                 </form>
 
@@ -127,17 +122,12 @@
                                     <input type="hidden" name="origem" value="rua">
                                     <input type="hidden" name="latitude" id="streetLat{{ $pet->id }}">
                                     <input type="hidden" name="longitude" id="streetLng{{ $pet->id }}">
-                                    <button type="button" class="btn btn-danger w-100 p-3 text-start rounded-4 shadow-sm border-0 d-flex align-items-center justify-content-between transition-hover" onclick="triggerStreetAlert({{ $pet->id }})" id="btnStreetAlert{{ $pet->id }}">
-                                        <div class="d-flex align-items-center">
-                                            <div class="bg-white text-danger rounded-circle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; min-width: 48px;" id="streetIconContainer{{ $pet->id }}">
-                                                <i class="bi bi-geo-alt-fill fs-4"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold fs-5 text-white" id="streetTitle{{ $pet->id }}">📍 Rua (Localização Atual)</div>
-                                                <small class="text-white-50 d-block" id="streetSubtitle{{ $pet->id }}">Captura onde você está agora pelo GPS.</small>
-                                            </div>
+                                    <button type="button" class="btn btn-danger w-100 p-3 text-start shadow-sm border-0 d-flex align-items-center justify-content-between transition-hover" onclick="triggerStreetAlert({{ $pet->id }})" id="btnStreetAlert{{ $pet->id }}">
+                                        <div>
+                                            <div class="fw-bold fs-5 text-white" id="streetTitle{{ $pet->id }}">Rua (Localização Atual)</div>
+                                            <small class="text-white-50 d-block" id="streetSubtitle{{ $pet->id }}">Captura onde você está agora pelo GPS.</small>
                                         </div>
-                                        <i class="bi bi-chevron-right fs-4 text-white" id="streetArrow{{ $pet->id }}"></i>
+                                        <span class="fs-5 text-white" id="streetArrow{{ $pet->id }}">&rarr;</span>
                                     </button>
                                     <div id="streetFeedback{{ $pet->id }}" class="alert alert-warning py-2 px-3 small mt-3 rounded-3" style="display: none;"></div>
                                 </form>
@@ -235,7 +225,7 @@
                     btn.disabled = false;
                     title.textContent = 'Rua (Localização Atual)';
                     subtitle.textContent = 'Captura onde você está agora pelo GPS do celular/computador.';
-                    iconContainer.innerHTML = '<i class="bi bi-geo-alt-fill fs-4"></i>';
+                    iconContainer.innerHTML = '';
 
                     let errorMsg = 'Não foi possível obter sua localização atual.';
                     if (err.code === 1) {

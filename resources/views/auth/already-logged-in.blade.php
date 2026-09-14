@@ -4,7 +4,7 @@
             <div class="card shadow-sm text-center">
                 <div class="card-body p-5">
                     <div class="mb-4">
-                        <span class="fs-1">👋</span>
+                        <span class="fs-1">🐾</span>
                     </div>
                     <h3>Olá, {{ Auth::user()->name }}!</h3>
                     <p class="text-muted fs-5 mb-4">Você já está logado na plataforma.</p>

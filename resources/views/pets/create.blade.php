@@ -67,11 +67,8 @@
                         <!-- Link de Vídeo Externo (Embed) -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Vídeo do Pet (Opcional - YouTube, TikTok ou Instagram)</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-play-circle-fill text-danger"></i></span>
-                                <input type="url" name="video_url" class="form-control @error('video_url') is-invalid @enderror"
-                                       value="{{ old('video_url') }}" placeholder="Ex: https://www.youtube.com/watch?v=... ou https://www.instagram.com/reel/...">
-                            </div>
+                            <input type="url" name="video_url" class="form-control @error('video_url') is-invalid @enderror"
+                                   value="{{ old('video_url') }}" placeholder="Ex: https://www.youtube.com/watch?v=... ou https://www.instagram.com/reel/...">
                             <div class="form-text">
                                 Cole o link de um vídeo do YouTube, TikTok ou Reels do Instagram para exibir na página do pet.
                             </div>
@@ -106,18 +103,18 @@
                         <div class="card bg-light border-0 p-3 mb-4 rounded-3">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <div class="fw-bold d-flex align-items-center">
-                                    <i class="bi bi-geo-alt-fill text-danger me-2"></i>Localização Residencial do Pet
+                                    Localização Residencial do Pet
                                 </div>
                                 <span class="badge {{ $defaultLat && $defaultLng ? 'bg-success' : 'bg-secondary' }}" id="petGpsBadge">
-                                    {{ $defaultLat && $defaultLng ? '📍 Definida' : '⚠️ Não definida' }}
+                                    {{ $defaultLat && $defaultLng ? 'Definida' : 'Não definida' }}
                                 </span>
                             </div>
                             <p class="small text-muted mb-2">
                                 Utilizada como ponto de partida das buscas caso o pet fuja de casa. Por padrão, herda o endereço do seu perfil.
                             </p>
                             <div class="d-flex flex-wrap align-items-center gap-2">
-                                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill d-inline-flex align-items-center" onclick="capturePetGps()" id="btnCaptureGps">
-                                    <i class="bi bi-crosshair me-1"></i><span id="btnCaptureGpsText">Usar meu GPS atual</span>
+                                <button type="button" class="btn btn-primary btn-sm d-inline-flex align-items-center" onclick="capturePetGps()" id="btnCaptureGps">
+                                    <span id="btnCaptureGpsText">Usar meu GPS atual</span>
                                 </button>
                                 <small class="text-muted" id="petGpsCoords">
                                     @if($defaultLat && $defaultLng)
@@ -169,7 +166,7 @@
                     btn.disabled = false;
                     btnText.textContent = 'Atualizar com GPS atual';
                     badge.className = 'badge bg-success';
-                    badge.textContent = '📍 Definida via GPS';
+                    badge.textContent = 'Definida via GPS';
                     coordsText.textContent = '(Localização atual capturada!)';
                 },
                 function(err) {

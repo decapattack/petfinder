@@ -55,7 +55,7 @@
             </div>
             <div class="col-12 mt-2">
                 <button type="button" class="btn btn-sm btn-primary" onclick="captureLocation()">
-                    📍 Atualizar Localização (Radar 1 KM)
+                    Atualizar Localização (Radar 1 KM)
                 </button>
                 <div id="geo-status" class="form-text"></div>
             </div>
@@ -74,7 +74,7 @@
             <x-primary-button>{{ __('Salvar') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
-                <span class="text-success small">✔ Salvo com sucesso!</span>
+                <span class="text-success small">Salvo com sucesso!</span>
             @endif
         </div>
     </form>
@@ -90,9 +90,9 @@ function captureLocation() {
         pos => {
             document.getElementById('latitude').value = pos.coords.latitude;
             document.getElementById('longitude').value = pos.coords.longitude;
-            status.innerHTML = '<span class="text-success">✔ Localização atualizada!</span>';
+            status.innerHTML = '<span class="text-success">Localização atualizada!</span>';
         },
-        () => { status.innerHTML = '<span class="text-danger">✗ Não foi possível obter a localização.</span>'; }
+        () => { status.innerHTML = '<span class="text-danger">Não foi possível obter a localização.</span>'; }
     );
 }
 </script>
