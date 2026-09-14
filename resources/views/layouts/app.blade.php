@@ -67,13 +67,31 @@
                                     </span>
                                 @endif
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-0" style="min-width:300px;">
-                                <li class="dropdown-header border-bottom py-2">Notificações</li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-0" style="min-width:320px;">
+                                <li class="dropdown-header border-bottom py-2 d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">Notificações</span>
+                                    @if(Auth::user()->unreadNotifications->count() > 0)
+                                        <form method="POST" action="{{ route('notifications.readAll') }}" class="m-0 p-0">
+                                            @csrf
+                                            <button type="submit" class="btn btn-link p-0 text-decoration-none text-primary" style="font-size:.75rem;">
+                                                Marcar todas como lidas
+                                            </button>
+                                        </form>
+                                    @endif
+                                </li>
                                 @forelse(Auth::user()->unreadNotifications as $notification)
                                     <li>
-                                        <a class="dropdown-item py-3 border-bottom small" href="{{ route('pets.public', $notification->data['pet_uuid'] ?? '#') }}">
-                                            <strong class="d-block text-danger"> Alerta Próximo</strong>
-                                            {{ $notification->data['mensagem'] ?? 'Alerta de pet perdido na região.' }}
+                                        <a class="dropdown-item py-3 border-bottom small text-wrap" href="{{ route('notifications.read', $notification->id) }}">
+                                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                                <strong class="text-danger"> Alerta Próximo</strong>
+                                                <span class="text-muted" style="font-size:.7rem;">{{ $notification->created_at->diffForHumans() }}</span>
+                                            </div>
+                                            <div class="text-secondary mb-1">
+                                                {{ $notification->data['mensagem'] ?? 'Alerta de pet perdido na região.' }}
+                                            </div>
+                                            <span class="text-primary fw-semibold" style="font-size:.75rem;">
+                                                Ver alerta e marcar como lida &rarr;
+                                            </span>
                                         </a>
                                     </li>
                                 @empty

@@ -39,7 +39,9 @@
                                         </div>
                                     @endif
                                 @else
-                                    <img src="{{ asset('storage/' . $item->path) }}" class="d-block w-100" style="height: 400px; object-fit: cover;" alt="{{ $pet->nome }}">
+                                    <div class="d-flex align-items-center justify-content-center bg-black" style="height: 400px;">
+                                        <img src="{{ asset('storage/' . $item->path) }}" class="d-block mh-100 mw-100" style="max-height: 400px; max-width: 100%; object-fit: contain;" alt="{{ $pet->nome }}">
+                                    </div>
                                 @endif
                             </div>
                         @empty

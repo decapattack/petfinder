@@ -4,6 +4,7 @@ use App\Http\Controllers\AlertController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HealthRecordController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
@@ -71,4 +72,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/pets/{pet}/schedules', [ScheduleController::class, 'store'])->name('pets.schedules.store');
     Route::post('/pets/{pet}/schedules/{schedule}/toggle', [ScheduleController::class, 'toggle'])->name('pets.schedules.toggle');
     Route::delete('/pets/{pet}/schedules/{schedule}', [ScheduleController::class, 'destroy'])->name('pets.schedules.destroy');
+
+    // ── Notifications ────────────────────────────────────────────────────────
+    Route::get('/notifications/{id}/read', [NotificationController::class, 'readAndRedirect'])->name('notifications.read');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
 });

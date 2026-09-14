@@ -63,11 +63,11 @@
                 </div>
             @else
                 <div class="d-none d-lg-flex align-items-center gap-2">
-                    <a href="{{ route('login') }}" class="btn btn-secondary" style="font-weight: 600; padding: .5rem 1.25rem;">
+                    <a href="{{ route('login') }}" class="btn btn-secondary" style="font-weight: 400; padding: .5rem 1.25rem;">
                         Entrar
                     </a>
-                    <a href="{{ route('register') }}" class="btn btn-reportar">
-                         Reportar Pet
+                    <a href="{{ route('register') }}" class="btn btn-reportar" style="font-weight: 400; padding: .5rem 1.25rem;">
+                        Reportar Pet
                     </a>
                 </div>
             @endauth

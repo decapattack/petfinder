@@ -141,7 +141,7 @@
 
     @push('scripts')
     <script>
-        function capturePetGps() {
+        function capturePetGps(isAuto = false) {
             const btn = document.getElementById('btnCaptureGps');
             const btnText = document.getElementById('btnCaptureGpsText');
             const badge = document.getElementById('petGpsBadge');
@@ -151,41 +151,65 @@
             feedback.style.display = 'none';
 
             if (!navigator.geolocation) {
-                feedback.textContent = 'Seu navegador não suporta geolocalização.';
-                feedback.style.display = 'block';
+                if (!isAuto) {
+                    feedback.textContent = 'Seu navegador não suporta geolocalização.';
+                    feedback.style.display = 'block';
+                }
                 return;
             }
 
             btn.disabled = true;
             btnText.textContent = 'Obtendo GPS...';
+            badge.className = 'badge bg-warning text-dark';
+            badge.textContent = 'Buscando GPS...';
 
             navigator.geolocation.getCurrentPosition(
                 function(pos) {
-                    document.getElementById('pet_latitude').value = pos.coords.latitude;
-                    document.getElementById('pet_longitude').value = pos.coords.longitude;
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+                    document.getElementById('pet_latitude').value = lat;
+                    document.getElementById('pet_longitude').value = lng;
                     btn.disabled = false;
                     btnText.textContent = 'Atualizar com GPS atual';
                     badge.className = 'badge bg-success';
                     badge.textContent = 'Definida via GPS';
-                    coordsText.textContent = '(Localização atual capturada!)';
+                    coordsText.innerHTML = '<span class="text-success fw-bold">✓ Localização atual capturada! (' + lat.toFixed(6) + ', ' + lng.toFixed(6) + ')</span>';
                 },
                 function(err) {
                     btn.disabled = false;
                     btnText.textContent = 'Usar meu GPS atual';
+
+                    const currentLat = document.getElementById('pet_latitude').value;
+                    if (currentLat) {
+                        badge.className = 'badge bg-info text-white';
+                        badge.textContent = 'Usando perfil';
+                    } else {
+                        badge.className = 'badge bg-secondary';
+                        badge.textContent = 'Não definida';
+                    }
+
                     let errorMsg = 'Não foi possível obter a localização.';
                     if (err.code === 1) {
-                        errorMsg = 'Permissão negada. Permita o acesso à localização no navegador.';
+                        errorMsg = 'Permissão de GPS negada no navegador. O sistema utilizará o endereço do perfil se disponível.';
                     } else if (err.code === 2) {
                         errorMsg = 'Sinal de GPS indisponível no momento.';
                     } else if (err.code === 3) {
                         errorMsg = 'Tempo limite excedido ao buscar GPS.';
                     }
-                    feedback.textContent = errorMsg;
-                    feedback.style.display = 'block';
+
+                    if (!isAuto || err.code !== 1) {
+                        feedback.textContent = errorMsg;
+                        feedback.style.display = 'block';
+                    }
                 },
                 { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
             );
         }
+
+        // Solicita automaticamente a localização do GPS ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            capturePetGps(true);
+        });
     </script>
     @endpush
 </x-app-layout>
