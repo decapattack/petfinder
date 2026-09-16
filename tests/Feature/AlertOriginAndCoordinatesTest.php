@@ -148,6 +148,5 @@ class AlertOriginAndCoordinatesTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Região do Desaparecimento');
         $response->assertSee('Exibir no Mapa');
-        $response->assertSee('toFixed(3)');
     }
 }

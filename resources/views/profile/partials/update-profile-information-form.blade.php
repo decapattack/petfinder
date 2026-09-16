@@ -47,17 +47,17 @@
         <div class="row mb-3">
             <div class="col-6">
                 <x-input-label for="latitude" :value="__('Latitude')" />
-                <x-text-input id="latitude" name="latitude" type="text" :value="old('latitude', $user->latitude)" readonly />
+                <x-text-input id="latitude" name="latitude" type="number" step="any" :value="old('latitude', $user->latitude)" placeholder="-19.9169910" />
             </div>
             <div class="col-6">
                 <x-input-label for="longitude" :value="__('Longitude')" />
-                <x-text-input id="longitude" name="longitude" type="text" :value="old('longitude', $user->longitude)" readonly />
+                <x-text-input id="longitude" name="longitude" type="number" step="any" :value="old('longitude', $user->longitude)" placeholder="-43.9878233" />
             </div>
             <div class="col-12 mt-2">
                 <button type="button" class="btn btn-sm btn-primary" onclick="captureLocation()">
                     Atualizar Localização (Radar 1 KM)
                 </button>
-                <div id="geo-status" class="form-text"></div>
+                <div id="geo-status" class="form-text">Você pode usar o GPS ou inserir manualmente coordenadas exatas (ex: 7 a 8 casas decimais).</div>
             </div>
         </div>
 
@@ -86,13 +86,15 @@ function captureLocation() {
     const status = document.getElementById('geo-status');
     if (!navigator.geolocation) { status.textContent = 'Geolocalização não suportada.'; return; }
     status.textContent = 'Obtendo localização...';
+    const geoOptions = { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 };
     navigator.geolocation.getCurrentPosition(
         pos => {
             document.getElementById('latitude').value = pos.coords.latitude;
             document.getElementById('longitude').value = pos.coords.longitude;
-            status.innerHTML = '<span class="text-success">Localização atualizada!</span>';
+            status.innerHTML = '<span class="text-success">Localização atualizada com alta precisão!</span>';
         },
-        () => { status.innerHTML = '<span class="text-danger">Não foi possível obter a localização.</span>'; }
+        () => { status.innerHTML = '<span class="text-danger">Não foi possível obter a localização exata.</span>'; },
+        geoOptions
     );
 }
 </script>

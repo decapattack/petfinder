@@ -162,8 +162,16 @@
                                     <div id="petGpsFeedback" class="alert alert-warning py-1 px-2 small mt-2 mb-0" style="display: none;"></div>
                                 </div>
 
-                                <input type="hidden" name="latitude" id="pet_latitude" value="{{ $currentLat }}">
-                                <input type="hidden" name="longitude" id="pet_longitude" value="{{ $currentLng }}">
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <label for="pet_latitude" class="form-label small">Latitude</label>
+                                        <input type="number" step="any" name="latitude" id="pet_latitude" class="form-control form-control-sm" value="{{ $currentLat }}">
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="pet_longitude" class="form-label small">Longitude</label>
+                                        <input type="number" step="any" name="longitude" id="pet_longitude" class="form-control form-control-sm" value="{{ $currentLng }}">
+                                    </div>
+                                </div>
 
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary btn-lg">
@@ -298,6 +306,8 @@
             btn.disabled = true;
             btnText.textContent = 'Obtendo GPS...';
 
+            const geoOptions = { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 };
+
             navigator.geolocation.getCurrentPosition(
                 function(pos) {
                     document.getElementById('pet_latitude').value = pos.coords.latitude;
@@ -306,23 +316,23 @@
                     btnText.textContent = 'Atualizar via GPS';
                     badge.className = 'badge bg-success';
                     badge.textContent = 'Definida via GPS';
-                    coordsText.textContent = '(Localização atual capturada!)';
+                    coordsText.textContent = '(Localização atual capturada com alta precisão!)';
                 },
                 function(err) {
                     btn.disabled = false;
                     btnText.textContent = 'Atualizar via GPS';
-                    let errorMsg = 'Não foi possível obter a localização.';
+                    let errorMsg = 'Não foi possível obter a localização exata.';
                     if (err.code === 1) {
                         errorMsg = 'Permissão negada. Permita o acesso à localização no navegador.';
                     } else if (err.code === 2) {
                         errorMsg = 'Sinal de GPS indisponível no momento.';
                     } else if (err.code === 3) {
-                        errorMsg = 'Tempo limite excedido ao buscar GPS.';
+                        errorMsg = 'Tempo limite excedido ao buscar GPS de alta precisão.';
                     }
                     feedback.textContent = errorMsg;
                     feedback.style.display = 'block';
                 },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                geoOptions
             );
         }
     </script>

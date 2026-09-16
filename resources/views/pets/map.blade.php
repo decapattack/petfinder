@@ -48,9 +48,9 @@
                 const rawLat = {{ $rawLat }};
                 const rawLng = {{ $rawLng }};
 
-                // Arredondamento para 3 casas decimais (grid de ~100m) para privacidade
-                const lat = Number(parseFloat(rawLat).toFixed(3));
-                const lng = Number(parseFloat(rawLng).toFixed(3));
+                // Utiliza alta precisão para exatidão do epicentro
+                const lat = parseFloat(rawLat);
+                const lng = parseFloat(rawLng);
 
                 // Zoom reduzido para 14 para visualizar melhor o raio maior
                 const map = L.map('map-full').setView([lat, lng], 14);

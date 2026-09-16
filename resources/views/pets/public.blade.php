@@ -176,9 +176,9 @@
                 const rawLng = {{ $rawLng ?? 'null' }};
 
                 if (desktopMapEl && rawLat !== null && rawLng !== null) {
-                    // Arredondamento para 3 casas decimais (grid de ~100m) para privacidade
-                    const lat = Number(parseFloat(rawLat).toFixed(3));
-                    const lng = Number(parseFloat(rawLng).toFixed(3));
+                    // Utiliza alta precisão para exatidão do epicentro
+                    const lat = parseFloat(rawLat);
+                    const lng = parseFloat(rawLng);
 
                     const map = L.map('map-desktop').setView([lat, lng], 14);
 

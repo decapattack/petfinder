@@ -88,6 +88,7 @@
             showNoLocation();
             return;
         }
+        const geoOptions = { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 };
         navigator.geolocation.getCurrentPosition(
             pos => {
                 document.getElementById('lat').value = pos.coords.latitude;
@@ -96,7 +97,8 @@
                 document.getElementById('geo-info').classList.add('d-none');
                 geoSuccess.classList.remove('d-none');
             },
-            () => showNoLocation()
+            () => showNoLocation(),
+            geoOptions
         );
     }
 
